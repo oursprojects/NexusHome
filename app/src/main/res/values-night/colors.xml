@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_gradient_start">#101723</color>
+    <color name="bg_gradient_center">#151E2E</color>
+    <color name="bg_gradient_end">#1A2639</color>
+
+    <color name="card_bg">#1B2940</color>
+    <color name="card_stroke">#33465F</color>
+    <color name="card_bg_temp">#22324B</color>
+    <color name="card_glow_active">#33355FE8</color>
+
+    <color name="text_heading">#EFF4FF</color>
+    <color name="text_body">#BCC8DB</color>
+    <color name="text_label">#93A5C0</color>
+
+    <color name="icon_button_tint">#E1E7F4</color>
+    <color name="header_home_text">#B9BEC8</color>
+    <color name="dialog_bg">#1B2940</color>
+    <color name="bg_scrim">#CC0B1220</color>
+    <color name="surface_action_bg">#24354F</color>
+    <color name="surface_action_stroke">#3A4E6D</color>
+    <color name="surface_soft_blue">#2F355FE8</color>
+    <color name="history_item_bg">#21314A</color>
+    <color name="history_item_stroke">#394C6C</color>
+    <color name="status_chip_bg">#33355FE8</color>
+    <color name="hero_surface_start">#243651</color>
+    <color name="hero_surface_end">#1B2940</color>
+    <color name="surface_success">#163A2A</color>
+    <color name="surface_warning">#3D2B17</color>
+    <color name="surface_error">#442326</color>
+    <color name="surface_neutral">#263449</color>
+    <color name="premium_edge_light">@color/card_stroke</color>
+    <color name="premium_edge_dark">@color/card_stroke</color>
+    <color name="premium_navy">@color/nexus_blue</color>
+    <color name="premium_navy_dark">@color/nexus_blue_dark</color>
+    <color name="premium_gold_soft">@color/surface_soft_blue</color>
+    <color name="premium_gold_line">@color/text_label</color>
+    <color name="premium_surface_top">@color/hero_surface_start</color>
+    <color name="premium_surface_bottom">@color/hero_surface_end</color>
+
+    <color name="icon_tint_inactive">#93A5C0</color>
+    <color name="status_connected_bg">#2736A56E</color>
+    <color name="status_connected_text">#79DFA7</color>
+    <color name="status_disconnected_bg">#21384A63</color>
+    <color name="status_disconnected_text">#B6C4D8</color>
+    <color name="status_error_bg">#2BD65C5C</color>
+    <color name="status_error_text">#FF9A9A</color>
+
+    <color name="switch_track_on">@color/nexus_blue</color>
+    <color name="switch_track_off">#4E5C74</color>
+    <color name="switch_thumb_on">#F9FAFB</color>
+    <color name="switch_thumb_off">#D5DDEA</color>
+
+    <color name="app_background_start">@color/bg_gradient_start</color>
+    <color name="app_background_center">@color/bg_gradient_center</color>
+    <color name="app_background_end">@color/bg_gradient_end</color>
+    <color name="card_background">@color/card_bg</color>
+</resources>

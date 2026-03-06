@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="nexus_blue">#355FE8</color>
+    <color name="nexus_blue_dark">#2343A8</color>
+    <color name="nexus_blue_light">#E2E9FF</color>
+    <color name="nexus_sapphire">#24324A</color>
+    <color name="nexus_sapphire_light">#5D6D87</color>
+    <color name="nexus_grey_light">#D8E0ED</color>
+
+    <color name="accent_gold">#E8B86C</color>
+    <color name="accent_orange">#F09A4A</color>
+    <color name="accent_green">#2EA56C</color>
+    <color name="accent_red">#D65C5C</color>
+    <color name="accent_purple">#6275C8</color>
+    <color name="accent_cyan">#3D9EE8</color>
+
+    <color name="status_connected_bg">#1F2EA56C</color>
+    <color name="status_connected_text">#1D7E50</color>
+    <color name="status_disconnected_bg">#1724324A</color>
+    <color name="status_disconnected_text">#5B6B84</color>
+    <color name="status_error_bg">#1FD65C5C</color>
+    <color name="status_error_text">#B74141</color>
+    <color name="status_connected">#2EA56C</color>
+    <color name="status_disconnected">#5B6B84</color>
+    <color name="status_connecting">#355FE8</color>
+
+    <color name="icon_tint_inactive">#7B8AA3</color>
+    <color name="icon_tint_active_blue">#355FE8</color>
+    <color name="icon_tint_active_orange">#F09A4A</color>
+    <color name="icon_tint_active_green">#2EA56C</color>
+
+    <color name="switch_track_on">@color/nexus_blue</color>
+    <color name="switch_track_off">#D8DEE8</color>
+    <color name="switch_thumb_on">#FFFFFFFF</color>
+    <color name="switch_thumb_off">#F7F9FC</color>
+
+    <color name="bg_gradient_start">#F6F8FC</color>
+    <color name="bg_gradient_center">#EEF2F8</color>
+    <color name="bg_gradient_end">#E5EBF4</color>
+
+    <color name="card_bg">#FCFDFE</color>
+    <color name="card_stroke">#D7E0EC</color>
+    <color name="card_bg_temp">#F7FAFE</color>
+    <color name="card_glow_active">#29355FE8</color>
+
+    <color name="text_heading">#213049</color>
+    <color name="text_body">#56657D</color>
+    <color name="text_label">#7B8AA3</color>
+    <color name="icon_button_tint">#314560</color>
+    <color name="header_home_text">#707070</color>
+    <color name="dialog_bg">#FFFFFFFF</color>
+    <color name="bg_scrim">#14355FE8</color>
+    <color name="surface_action_bg">#F7FAFE</color>
+    <color name="surface_action_stroke">#D4DEE9</color>
+    <color name="surface_soft_blue">#1A355FE8</color>
+    <color name="history_item_bg">#FAFCFE</color>
+    <color name="history_item_stroke">#D7E0EC</color>
+    <color name="status_chip_bg">#18355FE8</color>
+    <color name="hero_surface_start">#FFFFFF</color>
+    <color name="hero_surface_end">#EEF3FB</color>
+    <color name="surface_success">#EAF8F0</color>
+    <color name="surface_warning">#FFF4E9</color>
+    <color name="surface_error">#FDEEEE</color>
+    <color name="surface_neutral">#EEF3FA</color>
+    <color name="premium_edge_light">@color/white</color>
+    <color name="premium_edge_dark">@color/card_stroke</color>
+    <color name="premium_navy">@color/nexus_blue</color>
+    <color name="premium_navy_dark">@color/nexus_blue_dark</color>
+    <color name="premium_gold_soft">@color/nexus_blue_light</color>
+    <color name="premium_gold_line">@color/text_label</color>
+    <color name="premium_surface_top">@color/white</color>
+    <color name="premium_surface_bottom">@color/surface_action_bg</color>
+
+    <color name="icon_bg_blue">#E2E9FF</color>
+    <color name="icon_bg_grey">#EEF3FA</color>
+    <color name="icon_bg_orange">#FFF4E9</color>
+    <color name="icon_accent_blue">#355FE8</color>
+    <color name="icon_accent_grey">#5B6B84</color>
+    <color name="icon_accent_orange">#F09A4A</color>
+    <color name="text_primary">#213049</color>
+    <color name="text_secondary">#56657D</color>
+    <color name="background_dark">#101826</color>
+    <color name="surface_dark">#162337</color>
+    <color name="card_dark">#1E2C45</color>
+    <color name="app_background_start">@color/bg_gradient_start</color>
+    <color name="app_background_center">@color/bg_gradient_center</color>
+    <color name="app_background_end">@color/bg_gradient_end</color>
+    <color name="card_background">@color/card_bg</color>
+</resources>

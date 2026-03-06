@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.NexusHome" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/nexus_blue</item>
+        <item name="colorPrimaryDark">@color/nexus_blue_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/nexus_blue_light</item>
+        <item name="colorOnSecondary">@color/nexus_blue</item>
+
+        <item name="android:colorBackground">@color/bg_gradient_center</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <item name="colorOnSurface">@color/text_heading</item>
+        <item name="android:textColorPrimary">@color/text_heading</item>
+        <item name="android:textColorSecondary">@color/text_body</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/bg_gradient_end</item>
+    </style>
+
+    <style name="Theme.NexusHome" parent="Base.Theme.NexusHome" />
+</resources>
