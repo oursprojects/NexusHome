@@ -2,6 +2,8 @@
 
 NexusHome is a modern Android application designed for intuitive smart home control and monitoring. It provides a seamless interface to manage household devices such as lights and fans, while also providing real-time temperature tracking via Bluetooth connectivity.
 
+[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://github.com/oursprojects/NexusHome/releases/latest)
+
 ## 🚀 Key Features
 
 - **Bluetooth Connectivity**: Effortlessly connect to and control "NexusHome" smart devices over Bluetooth.
