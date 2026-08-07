@@ -16,4 +16,10 @@
     </style>
 
     <style name="Theme.NexusHome" parent="Base.Theme.NexusHome" />
+
+    <style name="Theme.NexusHome.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/bg_gradient_start</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/nexuslogo</item>
+        <item name="postSplashScreenTheme">@style/Theme.NexusHome</item>
+    </style>
 </resources>

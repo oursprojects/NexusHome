@@ -69,7 +69,7 @@
 
                 <TextView android:id="@+id/tvTemperature" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:autoSizeMinTextSize="16sp" android:autoSizeStepGranularity="1sp" android:autoSizeTextType="uniform" android:gravity="center" android:includeFontPadding="false" android:lines="1" android:text="@string/temp_default" android:textColor="@color/nexus_blue" android:textAppearance="@style/TextAppearance.NexusHome.DisplayMedium" />
 
-                <TextView android:id="@+id/tvTemperatureSummary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/last_sync_waiting" android:textColor="@color/text_body" android:textAppearance="@style/TextAppearance.NexusHome.Caption" tools:text="Comfortable range" />
+                <TextView android:id="@+id/tvTemperatureSummary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:visibility="gone" android:textColor="@color/text_body" android:textAppearance="@style/TextAppearance.NexusHome.Caption" tools:text="Comfortable range" tools:visibility="visible" />
 
                 <TextView android:id="@+id/tvLastUpdated" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/last_sync_waiting" android:textColor="@color/text_label" android:textAppearance="@style/TextAppearance.NexusHome.Caption" />
             </LinearLayout>

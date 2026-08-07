@@ -14,6 +14,7 @@ import android.view.TouchDelegate
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -111,6 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -149,6 +152,29 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         expandTouchTargets()
         checkPermissions()
+        if (savedInstanceState == null) {
+            playEntranceAnimation()
+        }
+    }
+
+    private fun playEntranceAnimation() {
+        binding.dashboardContent.alpha = 0f
+        binding.dashboardContent.translationY = 24f
+        binding.ivLogo.scaleX = 0.8f
+        binding.ivLogo.scaleY = 0.8f
+        binding.dashboardContent.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(600L)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+        binding.ivLogo.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(600L)
+            .setStartDelay(100L)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 
     override fun onResume() {
@@ -586,10 +612,10 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 
     private fun updateTemperatureSummary(tempStr: String, isDefaultIdle: Boolean) {
         if (isDefaultIdle) {
-            binding.tvTemperatureSummary.text = getString(R.string.last_sync_waiting)
-            binding.tvTemperatureSummary.setTextColor(ContextCompat.getColor(this, R.color.text_body))
+            binding.tvTemperatureSummary.visibility = View.GONE
             return
         }
+        binding.tvTemperatureSummary.visibility = View.VISIBLE
 
         val temp = tempStr.toFloatOrNull() ?: 0f
         val (labelRes, colorRes) = when {

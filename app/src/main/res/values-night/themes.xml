@@ -12,4 +12,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/bg_gradient_end</item>
     </style>
+
+    <style name="Theme.NexusHome.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/nexuslogo</item>
+        <item name="postSplashScreenTheme">@style/Theme.NexusHome</item>
+    </style>
 </resources>
