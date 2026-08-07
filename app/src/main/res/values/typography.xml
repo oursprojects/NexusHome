@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.NexusHome" parent="@android:style/TextAppearance" />
+
+    <style name="TextAppearance.NexusHome.DisplayLarge" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="TextAppearance.NexusHome.DisplayMedium" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.NexusHome.Title" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.NexusHome.Body" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextAppearance.NexusHome.Caption" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="TextAppearance.NexusHome.Label" parent="@style/TextAppearance.NexusHome">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.12</item>
+    </style>
+</resources>

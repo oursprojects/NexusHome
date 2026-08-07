@@ -46,6 +46,8 @@ class CommandLogAdapter : ListAdapter<CommandLog, CommandLogAdapter.LogViewHolde
             log.action.contains("Fan OFF", ignoreCase = true) -> R.drawable.fan_off
             log.action.contains("Light ON", ignoreCase = true) -> R.drawable.light_on
             log.action.contains("Light OFF", ignoreCase = true) -> R.drawable.light_off
+            log.action.contains("Curtain Open", ignoreCase = true) -> R.drawable.curtain_open
+            log.action.contains("Curtain Close", ignoreCase = true) -> R.drawable.curtain_closed
             log.action.contains("Auto Mode", ignoreCase = true) -> R.drawable.mode_auto
             log.action.contains("Manual Mode", ignoreCase = true) -> R.drawable.mode_manual
             else -> R.drawable.ic_lucide_clock
@@ -56,6 +58,7 @@ class CommandLogAdapter : ListAdapter<CommandLog, CommandLogAdapter.LogViewHolde
         return when {
             log.action.contains("Fan", ignoreCase = true) -> R.string.history_meta_fan
             log.action.contains("Light", ignoreCase = true) -> R.string.history_meta_light
+            log.action.contains("Curtain", ignoreCase = true) -> R.string.history_meta_curtain
             log.action.contains("Auto Mode", ignoreCase = true) -> R.string.history_meta_auto
             log.action.contains("Manual Mode", ignoreCase = true) -> R.string.history_meta_manual
             else -> R.string.history_meta_default

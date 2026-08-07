@@ -29,7 +29,8 @@ data class DeviceStatus(
     val temperature: String = "0.0",
     val lightOn: Boolean = false,
     val fanOn: Boolean = false,
-    val autoMode: Boolean = false
+    val autoMode: Boolean = false,
+    val curtainOpen: Boolean = false
 )
 
 /**
@@ -107,6 +108,7 @@ class BluetoothService private constructor(private val context: Context) {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private suspend fun performConnectionFlow() {
         _connectionState.value = ConnectionState.Connecting
         Log.d(TAG, "Starting connection flow...")
@@ -129,7 +131,7 @@ class BluetoothService private constructor(private val context: Context) {
             delay(500)
             sendCode(CMD_STATUS_REQUEST)
 
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             Log.i(TAG, "Connection flow cancelled by user")
             cleanup()
             _connectionState.value = ConnectionState.Disconnected
@@ -137,7 +139,6 @@ class BluetoothService private constructor(private val context: Context) {
             Log.e(TAG, "Connection flow failed: ${e.message}")
             cleanup()
             val errorMsg = when (e) {
-                is TimeoutCancellationException -> "Hardware ignored connection request"
                 is IOException -> "NexusHome is offline or busy"
                 else -> e.message ?: "Connection error"
             }
@@ -304,7 +305,7 @@ class BluetoothService private constructor(private val context: Context) {
                             parseStatus(line)
                         }
                     }
-                } catch (e: CancellationException) {
+                } catch (_: CancellationException) {
                     Log.d(TAG, "Socket listener cancelled")
                     break
                 } catch (e: Exception) {
@@ -342,11 +343,15 @@ class BluetoothService private constructor(private val context: Context) {
                 return
             }
 
+            // Optional 6th field for curtain state (backward-compatible)
+            val curtainOpen = if (parts.size >= 6) toBinaryFlagOrNull(parts[5]) ?: false else false
+
             _deviceStatus.value = DeviceStatus(
                 temperature = temperature,
                 lightOn = lightOn,
                 fanOn = fanOn,
-                autoMode = autoMode
+                autoMode = autoMode,
+                curtainOpen = curtainOpen
             )
         } catch (e: Exception) {
             Log.e(TAG, "Status parse error: ${e.message} for data: $data")

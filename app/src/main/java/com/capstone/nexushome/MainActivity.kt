@@ -4,10 +4,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
@@ -15,6 +18,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -48,6 +52,13 @@ class MainActivity : AppCompatActivity() {
     private val uiPrefs by lazy { getSharedPreferences("nexus_ui_prefs", MODE_PRIVATE) }
     private val commandTimeFormatter by lazy { SimpleDateFormat("hh:mm:ss a", Locale.getDefault()) }
     private val statusTimeFormatter by lazy { SimpleDateFormat("h:mm a", Locale.getDefault()) }
+
+    private enum class LocalCurtainState { IDLE, OPENING, CLOSING }
+    private var localCurtainState = LocalCurtainState.IDLE
+
+    private var fanLock = false
+    private var lightLock = false
+    private var modeLock = false
 
     companion object {
         private const val CONTROL_COOLDOWN_MS = 1000L
@@ -109,13 +120,20 @@ class MainActivity : AppCompatActivity() {
         val baseTop = binding.dashboardContent.paddingTop
         val baseEnd = binding.dashboardContent.paddingEnd
         val baseBottom = binding.dashboardContent.paddingBottom
-        ViewCompat.setOnApplyWindowInsetsListener(binding.dashboardContent) { v, insets ->
+        val footerBasePadBottom = binding.footerContainer.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
+            binding.dashboardContent.setPadding(
                 baseStart + bars.left,
                 baseTop + bars.top,
                 baseEnd + bars.right,
-                baseBottom + bars.bottom
+                baseBottom
+            )
+            binding.footerContainer.setPadding(
+                bars.left,
+                0,
+                bars.right,
+                footerBasePadBottom + bars.bottom
             )
             insets
         }
@@ -129,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         setConnectionHint(getString(R.string.connection_hint_disconnected))
         observeState()
         setupListeners()
+        expandTouchTargets()
         checkPermissions()
     }
 
@@ -211,34 +230,47 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleDeviceStatus(status: DeviceStatus) {
         if (isUpdatingUI) return
-        isUpdatingUI = true
-        try {
-            renderDeviceStatus(
-                status = status,
-                markFreshUpdate = viewModel.connectionState.value is ConnectionState.Connected
-            )
-
-            if (viewModel.connectionState.value is ConnectionState.Connected && !binding.switchFan.isEnabled) {
-                setControlsEnabled(true)
-            }
-        } finally {
-            isUpdatingUI = false
-        }
+        renderDeviceStatus(
+            status = status,
+            markFreshUpdate = viewModel.connectionState.value is ConnectionState.Connected
+        )
     }
 
     @SuppressLint("MissingPermission")
     private fun setupListeners() {
         binding.btnGrantPermissions.setOnClickListener {
             val needed = getNeededPermissions()
-            if (needed.isNotEmpty()) {
+            if (needed.isEmpty()) {
+                applyPermissionGate(hasMissingPermissions = false)
+                return@setOnClickListener
+            }
+
+            val canAskSystem = needed.any { shouldShowRequestPermissionRationale(it) }
+            val promptedOnce = uiPrefs.getBoolean(KEY_PERMISSION_PROMPTED_ONCE, false)
+
+            if (canAskSystem || !promptedOnce) {
                 permissionLauncher.launch(needed.toTypedArray())
             } else {
-                applyPermissionGate(hasMissingPermissions = false)
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.permission_denied_title))
+                    .setMessage(getString(R.string.permission_settings_msg))
+                    .setPositiveButton(getString(R.string.btn_open_settings)) { _, _ ->
+                        runCatching {
+                            startActivity(
+                                Intent(
+Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", packageName, null)
+                                )
+                            )
+                        }
+                    }
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
+                    .show()
             }
         }
 
         binding.btnHelp.setOnClickListener { showGuideDialog() }
-        binding.tvModeTip.setOnClickListener { showModeInfoDialog() }
+        binding.cardMode.setOnClickListener { showModeInfoDialog() }
 
         binding.btnHistory.setOnClickListener {
             runCatching {
@@ -253,27 +285,85 @@ class MainActivity : AppCompatActivity() {
         binding.switchFan.setOnCheckedChangeListener { toggle, isChecked ->
             if (isUpdatingUI) return@setOnCheckedChangeListener
             withConnectionGuard {
+                fanLock = true
                 setControlCooldown(toggle)
                 toggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 sendControlCommand(if (isChecked) "B" else "b", if (isChecked) "Fan ON" else "Fan OFF")
+                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                
+                binding.mainRoot.postDelayed({
+                    fanLock = false
+                    renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                }, 800L)
             }
         }
 
         binding.switchLight.setOnCheckedChangeListener { toggle, isChecked ->
             if (isUpdatingUI) return@setOnCheckedChangeListener
             withConnectionGuard {
+                lightLock = true
                 setControlCooldown(toggle)
                 toggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 sendControlCommand(if (isChecked) "A" else "a", if (isChecked) "Light ON" else "Light OFF")
+                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                
+                binding.mainRoot.postDelayed({
+                    lightLock = false
+                    renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                }, 800L)
+            }
+        }
+
+        binding.switchCurtain.setOnCheckedChangeListener { toggle, isChecked ->
+            if (isUpdatingUI) return@setOnCheckedChangeListener
+            withConnectionGuard {
+                toggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                val targetCommand = if (isChecked) "D" else "d"
+                val targetLabel = if (isChecked) "Curtain Open" else "Curtain Close"
+                val targetState = if (isChecked) LocalCurtainState.OPENING else LocalCurtainState.CLOSING
+
+                localCurtainState = targetState
+                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                
+                lifecycleScope.launch {
+                    viewModel.sendCommand(targetCommand)
+                        .onSuccess {
+                            logCommand(targetLabel)
+                            binding.mainRoot.postDelayed({
+                                if (localCurtainState == targetState) {
+                                    localCurtainState = LocalCurtainState.IDLE
+                                    if (viewModel.connectionState.value is ConnectionState.Connected) {
+                                        binding.switchCurtain.isEnabled = true
+                                    }
+                                    renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                                }
+                            }, 5000L)
+                        }
+                        .onFailure { throwable ->
+                            localCurtainState = LocalCurtainState.IDLE
+                            showUserMessage(
+                                throwable.message ?: getString(R.string.connection_failed),
+                                Toast.LENGTH_LONG
+                            )
+                            renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = false)
+                        }
+                }
             }
         }
 
         binding.switchMode.setOnCheckedChangeListener { toggle, isChecked ->
             if (isUpdatingUI) return@setOnCheckedChangeListener
             withConnectionGuard {
+                modeLock = true
                 setControlCooldown(toggle)
                 toggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 sendControlCommand(if (isChecked) "C" else "c", if (isChecked) "Auto Mode" else "Manual Mode")
+                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                
+                binding.mainRoot.postDelayed({
+                    modeLock = false
+                    renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                }, 800L)
             }
         }
 
@@ -294,9 +384,31 @@ class MainActivity : AppCompatActivity() {
 
         val needed = getNeededPermissions()
         if (needed.isNotEmpty()) {
-            pendingConnectRequest = true
-            applyPermissionGate(hasMissingPermissions = true)
-            permissionLauncher.launch(needed.toTypedArray())
+            val canAskSystem = needed.any { shouldShowRequestPermissionRationale(it) }
+            val promptedOnce = uiPrefs.getBoolean(KEY_PERMISSION_PROMPTED_ONCE, false)
+
+            if (canAskSystem || !promptedOnce) {
+                pendingConnectRequest = true
+                applyPermissionGate(hasMissingPermissions = true)
+                permissionLauncher.launch(needed.toTypedArray())
+            } else {
+                applyPermissionGate(hasMissingPermissions = true)
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.permission_denied_title))
+                    .setMessage(getString(R.string.permission_settings_msg))
+                    .setPositiveButton(getString(R.string.btn_open_settings)) { _, _ ->
+                        runCatching {
+                            startActivity(
+                                Intent(
+Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", packageName, null)
+                                )
+                            )
+                        }
+                    }
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
+                    .show()
+            }
             return
         }
 
@@ -378,6 +490,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun expandTouchTargets() {
+        val button = binding.btnConnect
+        val parent = button.parent as? View ?: return
+        button.post {
+            val targetPx = (48 * resources.displayMetrics.density).toInt()
+            val extra = (targetPx - button.height).coerceAtLeast(0)
+            val extraTop = extra / 2
+            val extraBottom = extra - extraTop
+            val rect = Rect(
+                button.left,
+                button.top - extraTop,
+                button.right,
+                button.bottom + extraBottom
+            )
+            parent.touchDelegate = TouchDelegate(rect, button)
+        }
+    }
+
     private fun setConnectionStatus(message: String, colorRes: Int, backgroundRes: Int) {
         binding.tvConnectionStatus.text = message
         binding.tvConnectionStatus.setTextColor(ContextCompat.getColor(this, colorRes))
@@ -389,28 +519,61 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun renderDeviceStatus(status: DeviceStatus, markFreshUpdate: Boolean) {
-        val isDefaultIdle = !markFreshUpdate && status == DeviceStatus()
-        binding.tvTemperature.text = if (isDefaultIdle) {
-            getString(R.string.temp_default)
-        } else {
-            getString(R.string.temp_format, status.temperature)
+        val wasUpdating = isUpdatingUI
+        isUpdatingUI = true
+        try {
+            val isDefaultIdle = !markFreshUpdate && status == DeviceStatus()
+            binding.tvTemperature.text = if (isDefaultIdle) {
+                getString(R.string.temp_default)
+            } else {
+                getString(R.string.temp_format, status.temperature)
+            }
+
+            updateTempIcon(status.temperature)
+            updateTempColor(status.temperature)
+            updateTemperatureSummary(status.temperature, isDefaultIdle)
+            updateLastUpdated(if (markFreshUpdate) Date() else null)
+
+            val showFanOn = if (fanLock) binding.switchFan.isChecked else status.fanOn
+            binding.switchFan.isChecked = showFanOn
+            updateFanIcon(showFanOn)
+            updateFanState(showFanOn)
+
+            val showLightOn = if (lightLock) binding.switchLight.isChecked else status.lightOn
+            binding.switchLight.isChecked = showLightOn
+            updateLightIcon(showLightOn)
+            updateLightState(showLightOn)
+
+            val isCurtainOpen = when (localCurtainState) {
+                LocalCurtainState.OPENING -> true
+                LocalCurtainState.CLOSING -> false
+                LocalCurtainState.IDLE -> status.curtainOpen
+            }
+            binding.switchCurtain.isChecked = isCurtainOpen
+            updateCurtainIcon(isCurtainOpen)
+            when (localCurtainState) {
+                LocalCurtainState.OPENING -> {
+                    binding.switchCurtain.isEnabled = false
+                    binding.tvCurtainState.text = getString(R.string.curtain_state_opening)
+                }
+                LocalCurtainState.CLOSING -> {
+                    binding.switchCurtain.isEnabled = false
+                    binding.tvCurtainState.text = getString(R.string.curtain_state_closing)
+                }
+                LocalCurtainState.IDLE -> {
+                    if (viewModel.connectionState.value is ConnectionState.Connected) {
+                        binding.switchCurtain.isEnabled = true
+                    }
+                    updateCurtainState(isCurtainOpen)
+                }
+            }
+
+            val showAutoMode = if (modeLock) binding.switchMode.isChecked else status.autoMode
+            binding.switchMode.isChecked = showAutoMode
+            updateModeIcon(showAutoMode)
+        } finally {
+            isUpdatingUI = wasUpdating
         }
-
-        updateTempIcon(status.temperature)
-        updateTempColor(status.temperature)
-        updateTemperatureSummary(status.temperature, isDefaultIdle)
-        updateLastUpdated(if (markFreshUpdate) Date() else null)
-
-        binding.switchFan.isChecked = status.fanOn
-        updateFanIcon(status.fanOn)
-        updateFanState(status.fanOn)
-
-        binding.switchLight.isChecked = status.lightOn
-        updateLightIcon(status.lightOn)
-        updateLightState(status.lightOn)
-
-        binding.switchMode.isChecked = status.autoMode
-        updateModeIcon(status.autoMode)
     }
 
     private fun updateLastUpdated(date: Date?) {
@@ -445,6 +608,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateLightState(on: Boolean) {
         binding.tvLightState.text = getString(if (on) R.string.light_state_on else R.string.light_state_off)
+    }
+
+    private fun updateCurtainIcon(open: Boolean) {
+        binding.ivCurtainIcon.setImageResource(if (open) R.drawable.curtain_open else R.drawable.curtain_closed)
+        binding.ivCurtainIcon.imageTintList = null
+    }
+
+    private fun updateCurtainState(open: Boolean) {
+        binding.tvCurtainState.text = getString(if (open) R.string.curtain_state_open else R.string.curtain_state_closed)
     }
 
     private fun updateModeDetails(auto: Boolean) {
@@ -484,7 +656,6 @@ class MainActivity : AppCompatActivity() {
         binding.ivModeIcon.setImageResource(if (auto) R.drawable.mode_auto else R.drawable.mode_manual)
         binding.ivModeIcon.imageTintList = null
         binding.tvModeTitle.text = if (auto) getString(R.string.mode_automatic_title) else getString(R.string.mode_manual_title)
-        binding.tvModeSubtitle.text = if (auto) getString(R.string.mode_auto_subtitle) else getString(R.string.mode_manual_subtitle)
         updateModeDetails(auto)
     }
 
@@ -541,15 +712,18 @@ class MainActivity : AppCompatActivity() {
         binding.btnConnect.visibility = View.GONE
         binding.btnDisconnect.visibility = View.VISIBLE
         binding.permissionCard.visibility = View.GONE
+        setControlsEnabled(true)
     }
 
     private fun setControlsEnabled(enabled: Boolean) {
         val alpha = if (enabled) 1f else 0.5f
         binding.switchLight.isEnabled = enabled
         binding.switchFan.isEnabled = enabled
+        binding.switchCurtain.isEnabled = enabled && localCurtainState == LocalCurtainState.IDLE
         binding.switchMode.isEnabled = enabled
         binding.switchLight.alpha = alpha
         binding.switchFan.alpha = alpha
+        binding.switchCurtain.alpha = if (enabled && localCurtainState != LocalCurtainState.IDLE) 0.7f else alpha
         binding.switchMode.alpha = alpha
     }
 
@@ -573,7 +747,7 @@ class MainActivity : AppCompatActivity() {
 
         val promptedOnce = uiPrefs.getBoolean(KEY_PERMISSION_PROMPTED_ONCE, false)
         if (hasMissingPermissions && !promptedOnce) {
-            uiPrefs.edit().putBoolean(KEY_PERMISSION_PROMPTED_ONCE, true).apply()
+            uiPrefs.edit { putBoolean(KEY_PERMISSION_PROMPTED_ONCE, true) }
             permissionLauncher.launch(needed.toTypedArray())
         }
     }
@@ -603,6 +777,7 @@ class MainActivity : AppCompatActivity() {
         binding.controlFlow.visibility = gatedVisibility
         binding.cardFan.visibility = gatedVisibility
         binding.cardLight.visibility = gatedVisibility
+        binding.cardCurtain.visibility = gatedVisibility
         binding.cardMode.visibility = gatedVisibility
         binding.permissionCard.visibility = if (hasMissingPermissions) View.VISIBLE else View.GONE
 

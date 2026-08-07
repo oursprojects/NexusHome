@@ -3,6 +3,8 @@
     <color name="bg_gradient_start">#101723</color>
     <color name="bg_gradient_center">#151E2E</color>
     <color name="bg_gradient_end">#1A2639</color>
+    <color name="bg_glow_gold">#0FE8B86C</color>
+    <color name="button_outline_start">#2B3D5A</color>
 
     <color name="card_bg">#1B2940</color>
     <color name="card_stroke">#33465F</color>

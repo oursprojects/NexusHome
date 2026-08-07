@@ -3,12 +3,12 @@
     <string name="app_name">NexusHome</string>
     <string name="title_nexus">Nexus</string>
     <string name="title_home">Home</string>
-    <string name="label_brand_tagline">Smart fan and light control.</string>
+    <string name="label_brand_tagline">Smart fan, light, and curtain control.</string>
     <string name="label_connection">Device status</string>
     <string name="label_grant_permissions_banner">Allow Bluetooth access</string>
     <string name="label_temperature_header">Room temperature</string>
     <string name="dashboard_title">Smart home controls</string>
-    <string name="dashboard_subtitle">Fan, light, and temperature in one place.</string>
+    <string name="dashboard_subtitle">Fan, light, curtain, and temperature in one place.</string>
     <string name="connection_hint_disconnected">Pair the device, then tap Connect.</string>
     <string name="connection_hint_connected">Live status is ready.</string>
     <string name="connection_hint_connecting">Connecting to NexusHome.</string>
@@ -31,6 +31,10 @@
     <string name="light_state_off">Off</string>
     <string name="light_hint_on">Light is on.</string>
     <string name="light_hint_off">Light is off.</string>
+    <string name="curtain_state_open">Open</string>
+    <string name="curtain_state_closed">Closed</string>
+    <string name="curtain_state_opening">Opening…</string>
+    <string name="curtain_state_closing">Closing…</string>
     <string name="mode_state_auto">Smart rules active</string>
     <string name="mode_state_manual">Manual control active</string>
     <string name="desc_logo">NexusHome logo</string>
@@ -38,19 +42,24 @@
     <string name="desc_theme">Toggle dark or light mode</string>
     <string name="desc_history">Open command history</string>
     <string name="desc_help">Open guide</string>
+    <string name="desc_fan_switch">Fan control</string>
+    <string name="desc_light_switch">Light control</string>
+    <string name="desc_curtain_switch">Curtain control</string>
+    <string name="desc_mode_switch">Automation mode</string>
 
     <string name="status_disconnected">Disconnected</string>
     <string name="status_connected">Connected</string>
-    <string name="status_connecting">Connecting...</string>
-    <string name="status_reconnecting">Reconnecting...</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_reconnecting">Reconnecting…</string>
     <string name="btn_connect">Connect device</string>
     <string name="btn_disconnect">Disconnect</string>
     <string name="btn_enable_bluetooth">Turn on Bluetooth</string>
-    <string name="btn_connect_waiting">Please wait...</string>
-    <string name="btn_connect_tap_cancel">Connecting... Tap to stop</string>
+    <string name="btn_connect_waiting">Please wait…</string>
+    <string name="btn_connect_tap_cancel">Connecting… Tap to stop</string>
 
     <string name="label_light">Light</string>
     <string name="label_fan">Fan</string>
+    <string name="label_curtain">Curtain</string>
     <string name="label_mode">Automation</string>
     <string name="label_controls">Control center</string>
     <string name="mode_auto">AUTO</string>
@@ -76,6 +85,7 @@
     <string name="history_meta_light">Lighting command</string>
     <string name="history_meta_auto">Automation enabled</string>
     <string name="history_meta_manual">Manual mode enabled</string>
+    <string name="history_meta_curtain">Curtain command</string>
     <string name="history_meta_default">Device command</string>
     <string name="btn_clear_history">Clear History</string>
     <string name="no_history">No commands yet</string>
@@ -97,6 +107,7 @@
     <string name="permission_required">Bluetooth permissions are required to use this app.</string>
     <string name="permission_denied_title">Permissions Required</string>
     <string name="permission_denied_msg">NexusHome needs Bluetooth and location permissions to connect to your smart-home device. Grant the required permissions to continue.</string>
+    <string name="permission_settings_msg">Permissions were previously denied. Please open App Settings and grant Bluetooth and Location permissions manually.</string>
     <string name="btn_grant_permissions">Grant Permissions</string>
     <string name="permissions_granted">Permissions granted</string>
     <string name="pairing_required_title">Pairing Required</string>
@@ -117,7 +128,7 @@
     <string name="guide_section_connection_title">Device Connectivity</string>
     <string name="guide_section_connection_body">Pair the NexusHome hardware in system Bluetooth settings once, then use Connect inside the app whenever you are ready.</string>
     <string name="guide_section_controls_title">Hardware Controls</string>
-    <string name="guide_section_controls_body">Use the dashboard toggles to manage the fan, light, and automatic behavior from one screen.</string>
+    <string name="guide_section_controls_body">Use the dashboard toggles to manage the fan, light, curtain, and automatic behavior from one screen.</string>
     <string name="guide_section_sync_title">Data Synchronization</string>
     <string name="guide_section_sync_body">The dashboard refreshes from the hardware so your cards stay aligned with the latest device state.</string>
     <string name="guide_section_monitoring_title">Environmental Monitoring</string>
@@ -125,4 +136,6 @@
     <string name="guide_section_history_title">Command Logging</string>
     <string name="guide_section_history_body">Open the history page anytime to review the commands that were successfully sent from this device.</string>
     <string name="btn_close">Close</string>
+
+    <string name="footer_credit">Developed by Team Nexus</string>
 </resources>

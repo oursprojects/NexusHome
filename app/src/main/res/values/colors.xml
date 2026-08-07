@@ -39,6 +39,8 @@
     <color name="bg_gradient_start">#F6F8FC</color>
     <color name="bg_gradient_center">#EEF2F8</color>
     <color name="bg_gradient_end">#E5EBF4</color>
+    <color name="bg_glow_gold">#10E8B86C</color>
+    <color name="button_outline_start">#FFFFFF</color>
 
     <color name="card_bg">#FCFDFE</color>
     <color name="card_stroke">#D7E0EC</color>
@@ -47,7 +49,7 @@
 
     <color name="text_heading">#213049</color>
     <color name="text_body">#56657D</color>
-    <color name="text_label">#7B8AA3</color>
+    <color name="text_label">#4A5870</color>
     <color name="icon_button_tint">#314560</color>
     <color name="header_home_text">#707070</color>
     <color name="dialog_bg">#FFFFFFFF</color>

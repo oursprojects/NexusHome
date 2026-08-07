@@ -35,7 +35,7 @@
             <gradient
                 android:endColor="@android:color/transparent"
                 android:gradientRadius="120dp"
-                android:startColor="#10E8B86C"
+                android:startColor="@color/bg_glow_gold"
                 android:type="radial" />
         </shape>
     </item>

@@ -40,8 +40,7 @@
         android:maxLines="1"
         android:text="@string/label_history"
         android:textColor="@color/text_heading"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.NexusHome.DisplayLarge"
         app:layout_constraintEnd_toStartOf="@id/headerActions"
         app:layout_constraintStart_toEndOf="@id/ivLogo"
         app:layout_constraintTop_toTopOf="@id/ivLogo" />
@@ -54,7 +53,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/history_subtitle"
         android:textColor="@color/text_body"
-        android:textSize="12sp"
+        android:textAppearance="@style/TextAppearance.NexusHome.Body"
         app:layout_constraintEnd_toStartOf="@id/headerActions"
         app:layout_constraintStart_toEndOf="@id/ivLogo"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
@@ -163,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/history_subtitle"
                     android:textColor="@color/text_body"
-                    android:textSize="13sp" />
+                    android:textAppearance="@style/TextAppearance.NexusHome.Body" />
 
                 <TextView
                     android:id="@+id/tvHistoryCount"
@@ -175,8 +174,8 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="14dp"
                     android:paddingBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.NexusHome.Body"
                     android:textColor="@color/text_heading"
-                    android:textSize="12sp"
                     android:textStyle="bold"
                     tools:text="12 saved commands" />
             </LinearLayout>
@@ -247,9 +246,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:text="@string/no_history"
+                    android:textAppearance="@style/TextAppearance.NexusHome.Title"
                     android:textColor="@color/text_heading"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tvNoHistoryHint"
@@ -259,7 +258,7 @@
                     android:gravity="center"
                     android:text="@string/history_empty_hint"
                     android:textColor="@color/text_body"
-                    android:textSize="13sp" />
+                    android:textAppearance="@style/TextAppearance.NexusHome.Body" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

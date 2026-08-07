@@ -1,0 +1,51 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Left curtain pulled open -->
+    <path
+        android:pathData="M2,2 L2,22"
+        android:strokeWidth="2"
+        android:strokeColor="#355FE8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M2,2 L8,2 Q4,6 4,12 Q4,18 8,22 L2,22"
+        android:fillColor="#355FE8"
+        android:fillAlpha="0.3"
+        android:strokeWidth="1.5"
+        android:strokeColor="#355FE8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Right curtain pulled open -->
+    <path
+        android:pathData="M22,2 L22,22"
+        android:strokeWidth="2"
+        android:strokeColor="#355FE8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M22,2 L16,2 Q20,6 20,12 Q20,18 16,22 L22,22"
+        android:fillColor="#355FE8"
+        android:fillAlpha="0.3"
+        android:strokeWidth="1.5"
+        android:strokeColor="#355FE8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Curtain rod -->
+    <path
+        android:pathData="M1,2 L23,2"
+        android:strokeWidth="2"
+        android:strokeColor="#355FE8"
+        android:strokeLineCap="round" />
+    <!-- Sunlight rays in the middle -->
+    <path
+        android:pathData="M12,8 L12,16"
+        android:strokeWidth="1.5"
+        android:strokeColor="#F09A4A"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M9,12 L15,12"
+        android:strokeWidth="1.5"
+        android:strokeColor="#F09A4A"
+        android:strokeLineCap="round" />
+</vector>
