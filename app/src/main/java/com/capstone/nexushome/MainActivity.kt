@@ -14,14 +14,18 @@ import android.view.TouchDelegate
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.view.animation.DecelerateInterpolator
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -61,6 +65,8 @@ class MainActivity : AppCompatActivity() {
     private var fanLock = false
     private var lightLock = false
     private var modeLock = false
+    private var keepSplashOnScreen = true
+    private var entranceAnimationPlayed = false
 
     companion object {
         private const val CONTROL_COOLDOWN_MS = 1000L
@@ -113,11 +119,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupSplashScreen(splashScreen, isFirstLaunch = savedInstanceState == null)
 
         val baseStart = binding.dashboardContent.paddingStart
         val baseTop = binding.dashboardContent.paddingTop
@@ -152,27 +160,75 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         expandTouchTargets()
         checkPermissions()
-        if (savedInstanceState == null) {
-            playEntranceAnimation()
+    }
+
+    private fun setupSplashScreen(splashScreen: SplashScreen, isFirstLaunch: Boolean) {
+        if (!isFirstLaunch) {
+            keepSplashOnScreen = false
+            return
+        }
+
+        // Prime dashboard content offstage for seamless reveal
+        binding.dashboardContent.alpha = 0f
+        binding.dashboardContent.translationY = 24f
+        binding.ivLogo.scaleX = 0.85f
+        binding.ivLogo.scaleY = 0.85f
+
+        // Keep splash screen visible for a comfortable duration
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
+
+        lifecycleScope.launch {
+            delay(1000L)
+            keepSplashOnScreen = false
+        }
+
+        // Custom exit animation: smooth icon expansion & fade-out, followed by dashboard slide-in
+        splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
+            val splashView = splashScreenViewProvider.view
+            val iconView = runCatching { splashScreenViewProvider.iconView }.getOrNull()
+
+            val animators = mutableListOf<android.animation.Animator>()
+
+            if (iconView != null) {
+                val scaleX = ObjectAnimator.ofFloat(iconView, View.SCALE_X, 1f, 1.18f)
+                val scaleY = ObjectAnimator.ofFloat(iconView, View.SCALE_Y, 1f, 1.18f)
+                val iconAlpha = ObjectAnimator.ofFloat(iconView, View.ALPHA, 1f, 0f)
+                animators.add(scaleX)
+                animators.add(scaleY)
+                animators.add(iconAlpha)
+            }
+
+            val viewAlpha = ObjectAnimator.ofFloat(splashView, View.ALPHA, 1f, 0f)
+            animators.add(viewAlpha)
+
+            AnimatorSet().apply {
+                duration = 380L
+                interpolator = DecelerateInterpolator()
+                playTogether(animators)
+                doOnEnd {
+                    splashScreenViewProvider.remove()
+                    if (!entranceAnimationPlayed) {
+                        entranceAnimationPlayed = true
+                        playEntranceAnimation()
+                    }
+                }
+                start()
+            }
         }
     }
 
     private fun playEntranceAnimation() {
-        binding.dashboardContent.alpha = 0f
-        binding.dashboardContent.translationY = 24f
-        binding.ivLogo.scaleX = 0.8f
-        binding.ivLogo.scaleY = 0.8f
         binding.dashboardContent.animate()
             .alpha(1f)
             .translationY(0f)
-            .setDuration(600L)
+            .setDuration(550L)
             .setInterpolator(DecelerateInterpolator())
             .start()
         binding.ivLogo.animate()
             .scaleX(1f)
             .scaleY(1f)
-            .setDuration(600L)
-            .setStartDelay(100L)
+            .setDuration(550L)
+            .setStartDelay(80L)
             .setInterpolator(DecelerateInterpolator())
             .start()
     }

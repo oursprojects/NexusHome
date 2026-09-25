@@ -15,7 +15,7 @@
 
     <style name="Theme.NexusHome.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background_dark</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/nexuslogo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.NexusHome</item>
     </style>
 </resources>
