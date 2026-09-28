@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val CONTROL_COOLDOWN_MS = 1000L
+        private const val CURTAIN_MOVE_TIME_MS = 25000L
         private const val KEY_PERMISSION_PROMPTED_ONCE = "permission_prompted_once"
     }
 
@@ -419,7 +420,7 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                     }
                                     renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
                                 }
-                            }, 5000L)
+                            }, CURTAIN_MOVE_TIME_MS)
                         }
                         .onFailure { throwable ->
                             localCurtainState = LocalCurtainState.IDLE

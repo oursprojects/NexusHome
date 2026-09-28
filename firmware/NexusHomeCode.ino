@@ -45,7 +45,7 @@ constexpr float TEMP_THRESHOLD_HIGH = 30.0f;
 constexpr float TEMP_THRESHOLD_LOW  = 29.0f;
 
 constexpr uint32_t SENSOR_INTERVAL       = 2500;
-constexpr uint32_t CURTAIN_MOVE_TIME     = 5000;
+constexpr uint32_t CURTAIN_MOVE_TIME     = 25000;
 constexpr uint32_t CURTAIN_SAVE_INTERVAL = 500;
 constexpr uint32_t DISPLAY_INTERVAL      = 50;   // 20 FPS while moving
 constexpr uint32_t HEARTBEAT_INTERVAL    = 500;
