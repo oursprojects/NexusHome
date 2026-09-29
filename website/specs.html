@@ -135,8 +135,14 @@
           <div class="power-card">
             <div class="power-card-header">
               <div class="power-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <line x1="8" y1="6" x2="8" y2="18"></line>
+                  <line x1="16" y1="6" x2="16" y2="18"></line>
+                  <path d="M12 2v3"></path>
+                  <path d="M7 3l1.5 2"></path>
+                  <path d="M17 3l-1.5 2"></path>
                 </svg>
               </div>
               <div>
@@ -155,9 +161,15 @@
           <div class="power-card">
             <div class="power-card-header">
               <div class="power-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                  <path d="M16 3H8M12 3v4"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="6" width="18" height="15" rx="2"></rect>
+                  <line x1="6" y1="3" x2="8" y2="3"></line>
+                  <line x1="7" y1="3" x2="7" y2="6"></line>
+                  <line x1="16" y1="3" x2="18" y2="3"></line>
+                  <line x1="17" y1="3" x2="17" y2="6"></line>
+                  <path d="M6 13h3"></path>
+                  <path d="M7.5 11.5v3"></path>
+                  <path d="M15 13h3"></path>
                 </svg>
               </div>
               <div>
@@ -176,10 +188,11 @@
           <div class="power-card">
             <div class="power-card-header">
               <div class="power-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="4" y="4" width="16" height="16" rx="2"/>
-                  <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
-                  <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <path d="M7 9l5 6 5-6"></path>
+                  <line x1="12" y1="4" x2="12" y2="9"></line>
+                  <line x1="7" y1="18" x2="17" y2="18"></line>
                 </svg>
               </div>
               <div>
@@ -226,21 +239,40 @@
           <h3 class="runtime-title">Nominal Battery Runtimes (84Wh Battery Capacity)</h3>
           <div class="runtime-grid">
             <div class="runtime-card">
-              <div class="runtime-icon">🌀</div>
+              <div class="runtime-icon" style="display: flex; justify-content: center; align-items: center; color: var(--brand-cyan);">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="2.5" fill="currentColor"></circle>
+                  <path d="M12 9.5c0-3 2-4.5 2-4.5s0 3-1 4"></path>
+                  <path d="M14.5 12c3 0 4.5 2 4.5 2s-3 0-4-1"></path>
+                  <path d="M12 14.5c0 3-2 4.5-2 4.5s0-3 1-4"></path>
+                  <path d="M9.5 12c-3 0-4.5-2-4.5-2s3 0 4 1"></path>
+                </svg>
+              </div>
               <div class="runtime-val">~5h 36m</div>
               <div class="runtime-app">Smart Fan Only</div>
               <div class="runtime-meta">15W Appliance (1.25A @ 12V)</div>
               <div class="runtime-calc">84Wh ÷ 15W = 5.60 Hours</div>
             </div>
             <div class="runtime-card">
-              <div class="runtime-icon">💡</div>
+              <div class="runtime-icon" style="display: flex; justify-content: center; align-items: center; color: var(--accent-orange);">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18h6"></path>
+                  <path d="M10 22h4"></path>
+                  <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
+                </svg>
+              </div>
               <div class="runtime-val">~12h 00m</div>
               <div class="runtime-app">Smart Light Only</div>
               <div class="runtime-meta">7W Appliance (0.58A @ 12V)</div>
               <div class="runtime-calc">84Wh ÷ 7W = 12.00 Hours</div>
             </div>
             <div class="runtime-card highlight">
-              <div class="runtime-icon">⚡</div>
+              <div class="runtime-icon" style="display: flex; justify-content: center; align-items: center; color: var(--accent-green);">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
               <div class="runtime-val">~3h 49m</div>
               <div class="runtime-app">Fan + Light Combined</div>
               <div class="runtime-meta">22W Total Load (1.83A @ 12V)</div>
@@ -512,9 +544,10 @@
           <div class="power-card">
             <div class="power-card-header">
               <div class="power-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="6"></rect>
+                  <circle cx="8" cy="12" r="3" fill="currentColor"></circle>
+                  <path d="M14 12h4"></path>
                 </svg>
               </div>
               <div>
@@ -623,6 +656,126 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- VC-02 Firmware Flashing & Configuration Hub -->
+        <div class="vc-flashing-card" style="margin-top: 36px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 26px;">
+          <div style="margin-bottom: 22px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+              <span class="section-tag" style="margin-bottom: 0;">VC-02 Edge Toolchain & Flashing</span>
+              <span class="spec-pill" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.1); color: var(--brand-cyan);">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px; vertical-align: -1px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                Offline Neural Audio DSP
+              </span>
+            </div>
+            <h3 style="font-size: 1.3rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-cyan); flex-shrink: 0;">
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                <rect x="9" y="9" width="6" height="6"></rect>
+                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M9 1v3M15 1v3M9 20v3M15 20v3"></path>
+              </svg>
+              <span>VC-02 Firmware Configuration & Flashing Specification</span>
+            </h3>
+            <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+              The AI-Thinker VC-02 module is powered by an offline neural voice processor configured using the official template on <a href="https://voice.ai-thinker.com/" target="_blank" rel="noopener noreferrer" style="color: var(--brand-cyan); text-decoration: underline; text-underline-offset: 3px;">voice.ai-thinker.com</a>. Production binaries and configurations are stored in the local repository under <code style="color: #60A5FA; background: rgba(96, 165, 250, 0.1); padding: 2px 6px; border-radius: 4px;">output/</code>, and flashed over UART using the official Hummingbird-M Update Tool.
+            </p>
+          </div>
+
+          <!-- Toolchain & Artifacts 3-Column Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <!-- Resource 1: Ai-Thinker Voice Platform -->
+            <div style="background: rgba(11, 17, 30, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; color: var(--brand-cyan);">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 0.98rem; margin: 0; color: var(--text-primary);">Ai-Thinker Voice Platform</h4>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Template & Speech Model Compiler</span>
+                  </div>
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+                  Cloud acoustic template customizer used to define the wake word (<em>"Nexus"</em>), offline command phrases, UART baud (9600), and acknowledgement audio tones.
+                </p>
+              </div>
+              <a href="https://voice.ai-thinker.com/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.8rem; padding: 8px 14px; width: fit-content; gap: 6px;">
+                <span>Visit voice.ai-thinker.com</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              </a>
+            </div>
+
+            <!-- Resource 2: Flashing Software -->
+            <div style="background: rgba(11, 17, 30, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; color: #10B981;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 0.98rem; margin: 0; color: var(--text-primary);">Hummingbird-M Update Tool</h4>
+                    <span style="font-size: 0.75rem; color: #10B981;">Official Flashing Software</span>
+                  </div>
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+                  Ai-Thinker's official Windows UART flashing utility for burning the compiled <code>uni_app_release.bin</code> firmware directly into VC-02 SPI flash.
+                </p>
+              </div>
+              <a href="https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/VoiceModule/vc/Support/hummingbird-m-update-tool.zip" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 0.8rem; padding: 8px 14px; width: fit-content; gap: 6px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download Tool (.zip)</span>
+              </a>
+            </div>
+
+            <!-- Resource 3: Repository Output Directory -->
+            <div style="background: rgba(11, 17, 30, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: #F59E0B;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 0.98rem; margin: 0; color: var(--text-primary);">Configured Output Binaries</h4>
+                    <span style="font-size: 0.75rem; color: #F59E0B;">Repo Directory: /output</span>
+                  </div>
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+                  Pre-configured binaries and documents located in <code style="color: #60A5FA;">NexusHome/output</code>:
+                  <code style="color: var(--brand-cyan); font-weight: 600;">uni_app_release.bin</code> (target file to flash), plus <code style="color: #60A5FA;">VC-02 Configurations.docx</code>.
+                </p>
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <span class="spec-pill" style="font-size: 0.72rem; padding: 2px 8px; border-color: rgba(56, 189, 248, 0.4); color: var(--brand-cyan);">Target: uni_app_release.bin</span>
+                <span class="spec-pill" style="font-size: 0.72rem; padding: 2px 8px;">VC-02 Configurations.docx</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Flashing Procedure -->
+          <div style="background: rgba(6, 11, 20, 0.6); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: var(--radius-md); padding: 20px;">
+            <h4 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-cyan);"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              <span>Step-by-Step VC-02 Flashing Procedure</span>
+            </h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+              <div style="border-left: 2px solid var(--brand-cyan); padding-left: 12px;">
+                <div style="font-size: 0.74rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Step 1 • Tool Setup</div>
+                <div style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45;">Download and extract <code style="color: var(--brand-cyan);">hummingbird-m-update-tool.zip</code> onto your Windows computer.</div>
+              </div>
+              <div style="border-left: 2px solid var(--brand-cyan); padding-left: 12px;">
+                <div style="font-size: 0.74rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Step 2 • Serial Wiring</div>
+                <div style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45;">Wire the VC-02 to a USB-to-UART adapter (CH340/CP2102): <code>3.3V/5V</code>, <code>GND</code>, <code>TX &rarr; RX</code>, <code>RX &rarr; TX</code>.</div>
+              </div>
+              <div style="border-left: 2px solid var(--brand-cyan); padding-left: 12px;">
+                <div style="font-size: 0.74rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Step 3 • Port & File Selection</div>
+                <div style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45;">Launch Hummingbird-M, select your COM port, and browse to select <code style="color: #60A5FA;">NexusHome/output/uni_app_release.bin</code>.</div>
+              </div>
+              <div style="border-left: 2px solid var(--brand-cyan); padding-left: 12px;">
+                <div style="font-size: 0.74rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Step 4 • Burn Firmware</div>
+                <div style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45;">Click <strong>Download / Flash</strong>. Wait for the progress bar to complete 100% and report successful flash verification.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

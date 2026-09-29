@@ -1431,6 +1431,41 @@ h1, h2, h3, h4 {
   letter-spacing: 0.04em;
 }
 
+.team-subrole {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.team-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  color: var(--text-secondary);
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all var(--transition-fast);
+}
+
+.team-card:hover .team-badge {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--text-primary);
+}
+
+.team-badge svg {
+  color: var(--brand-cyan);
+  flex-shrink: 0;
+}
+
 /* Footer */
 .footer {
   border-top: 1px solid var(--border-subtle);
