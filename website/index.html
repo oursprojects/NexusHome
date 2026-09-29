@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>NexusHome - Smart Home Automation Companion App</title>
+  <meta name="title" content="NexusHome - Smart Home Automation Companion App">
+  <meta name="description" content="NexusHome is a modern Android application for intuitive smart home control and monitoring. Control lights, fans, and motorized curtains with real-time temperature tracking via ESP32 Bluetooth.">
+  <meta name="keywords" content="NexusHome, Smart Home, Android, IoT, ESP32, Home Automation, Bluetooth SPP, Capstone Project, Arduino">
+  <meta name="author" content="Team Nexus">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nexushome.vercel.app/">
+  <meta property="og:title" content="NexusHome - Smart Home Automation Companion App">
+  <meta property="og:description" content="Effortlessly control your smart lights, fans, and motorized curtains with real-time temperature tracking. Download the latest Android APK.">
+  <meta property="og:image" content="assets/nexuslogo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/nexuslogo.png">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+
+  <!-- Top Navigation -->
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <a href="#hero" class="nav-brand" id="navBrand">
+          <img src="assets/nexuslogo.png" alt="NexusHome Logo">
+          <span><span class="brand-nexus">Nexus</span><span class="brand-home">Home</span></span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#screenshots" class="nav-link">App Interface</a></li>
+          <li><a href="#hardware" class="nav-link">Hardware Hub</a></li>
+          <li><a href="#architecture" class="nav-link">Architecture</a></li>
+          <li><a href="specs.html#protocol" class="nav-link">Commands & Specs ↗</a></li>
+          <li><a href="#install" class="nav-link">Install</a></li>
+          <li><a href="#team" class="nav-link">Team</a></li>
+          <li class="nav-mobile-item">
+            <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-sm dynamic-apk-link nav-mobile-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+              </svg>
+              <span>Download APK</span>
+            </a>
+          </li>
+          <li class="nav-mobile-item">
+            <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm nav-mobile-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" id="btnNavGithub">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <!-- Mobile Hamburger Toggle Button -->
+          <button type="button" class="nav-toggle" id="btnNavToggle" aria-label="Toggle Navigation Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            <span>Version <strong class="release-version-tag">v1.0.4</strong> Released • Android 8.0 to 16</span>
+          </div>
+
+          <h1 class="hero-title">
+            Smart Living, <br>
+            <span class="gradient-text">Intelligently Connected.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            NexusHome connects your smartphone directly to household appliances over low-latency Bluetooth. Control lights, fans, and 25-second motorized curtains with real-time temperature tracking and offline voice recognition.
+          </p>
+
+          <div class="hero-actions">
+            <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-lg dynamic-apk-link" id="btnHeroDownload">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="22" height="22">
+                <path fill="currentColor" d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993s-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9994.4482.9994.9993s-.4483.9997-.9994.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 0 0-.1521-.5676.416.416 0 0 0-.5676.1521l-2.0223 3.503C15.5847 8.4116 13.8447 8.125 12 8.125c-1.8447 0-3.5847.2866-5.1368.8247L4.841 5.4467a.4161.4161 0 0 0-.5677-.1521.4157.4157 0 0 0-.1521.5676l1.9974 3.4592C2.6889 11.1867.343 14.6589 0 18.75h24c-.343-4.0911-2.6889-7.5633-6.1185-9.4286"/>
+              </svg>
+              <span>Download APK (<span class="release-size-tag">5.45 MB</span>)</span>
+            </a>
+
+            <a href="#screenshots" class="btn btn-secondary btn-lg" id="btnHeroScreenshots">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M21 15l-5-5L5 21"/>
+              </svg>
+              <span>Explore Screenshots</span>
+            </a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>100% Free & Open-Source</span>
+            </div>
+            <div class="hero-meta-item">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>Signed Production Build</span>
+            </div>
+            <div class="hero-meta-item">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>No Cloud Account Needed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Real Screen Showcase -->
+        <div class="hero-showcase-container">
+          <div class="hero-screen-frame">
+            <!-- Theme quick-tabs -->
+            <div class="hero-screen-tabs">
+              <button type="button" class="screen-tab active" data-screen="connected" title="Show Live Connected Dashboard">Live Control</button>
+              <button type="button" class="screen-tab" data-screen="dark" title="Show Dark Theme">Dark Theme</button>
+              <button type="button" class="screen-tab" data-screen="light" title="Show Light Theme">Light Theme</button>
+            </div>
+
+            <!-- Device Frame with Screenshot -->
+            <div class="hero-device-wrapper">
+              <div class="hero-device-notch">
+                <div class="notch-lens"></div>
+              </div>
+              <img src="assets/exampleconnectedscreen.jpg" alt="NexusHome App Interface Preview" class="hero-app-screen" id="heroAppImg">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Capabilities</span>
+          <h2 class="section-title">Engineered for Reliability & Everyday Comfort</h2>
+          <p class="section-desc">NexusHome bridges physical micro-controllers with a native Android experience for zero-latency, private home management.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Real-Time Climate Tracking</h3>
+            <p class="feature-text">High-accuracy DHT22 digital temperature sensing with automatic hysteresis: triggers fans ON at &ge;30°C and restores OFF at &le;29°C.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M12 3v18M3 8h18"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">25s Motorized Curtains</h3>
+            <p class="feature-text">Timed bidirectional relay control with power-loss memory persistence (NVS) to ensure smooth full-traverse opening and closing cycles.</p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Offline Voice Commands</h3>
+            <p class="feature-text">Built-in VC-02 speech module over UART for instant offline voice control: <em>"lights on/off"</em>, <em>"fan on/off"</em>, <em>"open/close curtain"</em>, and <em>"automatic/manual mode"</em>.</p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m7 7 10 10-5 5V2l5 5L7 17"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Bluetooth SPP Connectivity</h3>
+            <p class="feature-text">Direct RFCOMM serial communication with automatic exponential-backoff reconnecting up to 5 attempts, keeping your connection stable.</p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Local Room DB Audit Log</h3>
+            <p class="feature-text">Every single command and actuation is recorded locally using Android Room SQLite with timestamped history and clear-all protection.</p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">SSD1309 2.42" OLED UI</h3>
+            <p class="feature-text">The ESP32 microcontroller features a dedicated 20 FPS high-contrast OLED display with animated startup, live heartbeat, and device status cards.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real App Screenshots Showcase Section -->
+    <section class="section" id="screenshots">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">App Interface</span>
+          <h2 class="section-title">Designed for Simplicity & Real-Time Control</h2>
+          <p class="section-desc">Explore the official NexusHome Android application. Experience Material 3 architecture, day & night themes, offline Room DB history, and instant telemetry.</p>
+        </div>
+
+        <div class="screenshots-grid">
+          <!-- Screenshot 1: Connected Live Control -->
+          <div class="screenshot-card" data-full="assets/exampleconnectedscreen.jpg" data-title="Live Control Dashboard">
+            <div class="screenshot-preview">
+              <img src="assets/exampleconnectedscreen.jpg" alt="Live Control Dashboard Screen" loading="lazy">
+            </div>
+            <div class="screenshot-body">
+              <div class="screenshot-badge">Primary Dashboard</div>
+              <h3 class="screenshot-title">Live Control Dashboard</h3>
+              <p class="screenshot-desc">Direct Bluetooth SPP telemetry displaying real-time DHT22 ambient room temperature, tactile fan & light switches, and 25s motorized curtain transit progress.</p>
+            </div>
+          </div>
+
+          <!-- Screenshot 2: Dark Mode Screen -->
+          <div class="screenshot-card" data-full="assets/darkmodescreen.jpg" data-title="Dark Theme Interface">
+            <div class="screenshot-preview">
+              <img src="assets/darkmodescreen.jpg" alt="Dark Mode Screen" loading="lazy">
+            </div>
+            <div class="screenshot-body">
+              <div class="screenshot-badge">OLED Theme</div>
+              <h3 class="screenshot-title">Deep Dark Theme</h3>
+              <p class="screenshot-desc">High-contrast dark palette tailored for night-time comfort and lower battery drain on OLED smartphone displays without compromising visibility.</p>
+            </div>
+          </div>
+
+          <!-- Screenshot 3: Light Mode Screen -->
+          <div class="screenshot-card" data-full="assets/lightmodescreen.jpg" data-title="Light Theme Interface">
+            <div class="screenshot-preview">
+              <img src="assets/lightmodescreen.jpg" alt="Light Mode Screen" loading="lazy">
+            </div>
+            <div class="screenshot-body">
+              <div class="screenshot-badge">Light Theme</div>
+              <h3 class="screenshot-title">Clean Daytime View</h3>
+              <p class="screenshot-desc">Refined daytime aesthetic with clear hierarchy, vibrant state highlights, and sharp typography that remains crystal clear under direct sunlight.</p>
+            </div>
+          </div>
+
+          <!-- Screenshot 4: Command History Area Screen -->
+          <div class="screenshot-card" data-full="assets/commandhistoryareascreen.jpg" data-title="Room Database Command Logs">
+            <div class="screenshot-preview">
+              <img src="assets/commandhistoryareascreen.jpg" alt="Command History Screen" loading="lazy">
+            </div>
+            <div class="screenshot-body">
+              <div class="screenshot-badge">SQLite Room DB</div>
+              <h3 class="screenshot-title">Offline Command History</h3>
+              <p class="screenshot-desc">Audit logs stored safely inside local Android SQLite storage, keeping a timestamped trail of fan, light, and curtain events with one-tap clearing.</p>
+            </div>
+          </div>
+
+          <!-- Screenshot 5: Quick Start Guide Area Screen -->
+          <div class="screenshot-card" data-full="assets/quickstartguideareascreen.jpg" data-title="Built-In Quick Start Guide">
+            <div class="screenshot-preview">
+              <img src="assets/quickstartguideareascreen.jpg" alt="Quick Start Guide Screen" loading="lazy">
+            </div>
+            <div class="screenshot-body">
+              <div class="screenshot-badge">On-Device Documentation</div>
+              <h3 class="screenshot-title">Quick Start Guide</h3>
+              <p class="screenshot-desc">Embedded user manual available entirely offline, covering Bluetooth pairing, curtain calibration, and automatic temperature threshold rules (≥30°C ON / ≤29°C OFF).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Physical Hardware Showcase Section -->
+    <section class="section" id="hardware">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Custom Hardware Engineering</span>
+          <h2 class="section-title">The Physical NexusHome Hub</h2>
+          <p class="section-desc">Controlled directly by the NexusHome Android app via offline Bluetooth Classic SPP. Engineered with battery backup, active thermal control, optocoupled relay isolation, and offline voice processing.</p>
+        </div>
+
+        <div class="hardware-showcase">
+          <!-- View Switcher Tabs -->
+          <div class="hardware-tabs" role="tablist">
+            <button type="button" class="hw-tab active" data-hw="front" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                <rect x="7" y="7" width="10" height="5" rx="1"/>
+                <circle cx="8" cy="16" r="1.5"/>
+                <circle cx="12" cy="16" r="1.5"/>
+              </svg>
+              <span>Exterior Front View</span>
+            </button>
+            <button type="button" class="hw-tab" data-hw="inside" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                <path d="M9 9h6v6H9z"/>
+              </svg>
+              <span>Internal Architecture (With Labels)</span>
+            </button>
+            <button type="button" class="hw-tab" data-hw="side" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <span>Side View & Cooling Fans</span>
+            </button>
+          </div>
+
+          <!-- Main Interactive Hardware Display Card -->
+          <div class="hw-viewer-card">
+            <div class="hw-image-container" id="hwViewerContainer" title="Click to view full screen">
+              <img 
+                src="assets/NexushomeHardwareFrontView.png" 
+                alt="NexusHome Hardware Front View Enclosure with OLED Display" 
+                id="hwMainImg" 
+                class="hw-main-img"
+                loading="lazy"
+              >
+            </div>
+
+            <div class="hw-viewer-footer">
+              <div class="hw-info">
+                <span class="hw-badge" id="hwBadge">Exterior Enclosure</span>
+                <h3 class="hw-title" id="hwTitle">Front View & Status Display Enclosure</h3>
+                <p class="hw-desc" id="hwDesc">Precision custom wall-mounted chassis presenting the SSD1309 2.42" high-contrast OLED screen, system status indicators, and sleek matte finish.</p>
+              </div>
+              <div class="hw-action">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnHwZoom">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                  <span>Full Screen Zoom</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Component Highlights Grid -->
+          <div class="hw-components-grid">
+            <div class="hw-comp-card">
+              <div class="hw-comp-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 3H8M12 3v4"/>
+                </svg>
+              </div>
+              <div>
+                <h4>12V 7Ah Battery & 20W Solar</h4>
+                <p>Motolite sealed lead-acid battery (84Wh nominal) paired with a 20W monocrystalline solar panel, 10A PWM charge controller, and XH-M350 automatic backup switchover.</p>
+              </div>
+            </div>
+
+            <div class="hw-comp-card">
+              <div class="hw-comp-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <path d="M7 8h10M7 12h10M7 16h10"/>
+                </svg>
+              </div>
+              <div>
+                <h4>4-Channel Isolated Relays</h4>
+                <p>Active-LOW drivers controlling 12V 7W lighting (GPIO2), 12V 15W cooling fan (GPIO15), and bidirectional JGY-370 12V 30RPM motorized curtains (GPIO18/19).</p>
+              </div>
+            </div>
+
+            <div class="hw-comp-card">
+              <div class="hw-comp-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <path d="M8 21h8M12 17v4"/>
+                </svg>
+              </div>
+              <div>
+                <h4>2.42" OLED & DHT22 Sensor</h4>
+                <p>High-contrast SSD1309 physical dashboard running at 20 FPS via I²C (GPIO21/22) paired with a DHT22 sensor on GPIO33 sampling every 2.5s with 30°C ON / 29°C OFF hysteresis.</p>
+              </div>
+            </div>
+
+            <div class="hw-comp-card">
+              <div class="hw-comp-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 2a10 10 0 0 1 10 10M12 12 6 6M12 12l6-6"/>
+                </svg>
+              </div>
+              <div>
+                <h4>VC-02 Voice AI & Dual Fans</h4>
+                <p>AI-Thinker VC-02 offline speech processor over UART (GPIO16/17 @ 9600 baud) with "Nexus" wake word and 350ms debounce, dual brushless cooling fans, and 5V active buzzer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture & Stack Section -->
+    <section class="section" id="architecture">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">System Design</span>
+          <h2 class="section-title">Hardware Meets Modern Software</h2>
+          <p class="section-desc">Designed with an end-to-end decoupled architecture for high stability and zero reliance on external internet connections.</p>
+        </div>
+
+        <div class="architecture-box">
+          <div class="arch-visual">
+            <!-- Node 1: Mobile App -->
+            <div class="arch-node">
+              <div class="arch-node-info">
+                <div class="node-icon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Android Mobile Application</strong>
+                  <div class="node-sub">Native Kotlin Controller</div>
+                </div>
+              </div>
+              <span class="arch-node-badge">Kotlin • MVVM • Room</span>
+            </div>
+
+            <!-- Connector 1 -->
+            <div class="arch-connector">
+              <div class="connector-line">
+                <span class="connector-pulse"></span>
+              </div>
+              <span class="connector-text">&#8595; Bluetooth Classic RFCOMM (SPP Serial) &#8593;</span>
+            </div>
+
+            <!-- Node 2: ESP32 -->
+            <div class="arch-node">
+              <div class="arch-node-info">
+                <div class="node-icon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                    <rect x="9" y="9" width="6" height="6"/>
+                    <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
+                    <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+                    <line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/>
+                    <line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>ESP32 Microcontroller Node</strong>
+                  <div class="node-sub">Firmware Core & FreeRTOS</div>
+                </div>
+              </div>
+              <span class="arch-node-badge">C++ • Flash NVS</span>
+            </div>
+
+            <!-- Connector 2 -->
+            <div class="arch-connector">
+              <div class="connector-line">
+                <span class="connector-pulse"></span>
+              </div>
+              <span class="connector-text">&#8595; GPIO Relays • I2C OLED • UART VC-02 • DHT22 &#8593;</span>
+            </div>
+
+            <!-- Node 3: Actuators -->
+            <div class="arch-node">
+              <div class="arch-node-info">
+                <div class="node-icon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Household Physical Actuators</strong>
+                  <div class="node-sub">Lights, Fans & Motorized Curtains</div>
+                </div>
+              </div>
+              <span class="arch-node-badge">12V DC Relays • JGY-370 Motor</span>
+            </div>
+          </div>
+
+          <div class="arch-standards">
+            <h3 class="arch-standards-title">Built with Modern Engineering Standards</h3>
+            <p class="arch-standards-desc">
+              The mobile application uses Kotlin with Android Jetpack, implementing Model-View-ViewModel (MVVM) separation of concerns. The embedded firmware uses non-blocking cooperative scheduling (<code>millis()</code>) to drive 20 FPS OLED animations, reliable serial streaming, and motor safety cutoffs simultaneously.
+            </p>
+            <div class="arch-checklist">
+              <div class="arch-check-item">
+                <span class="arch-check-icon">&#10003;</span>
+                <span>Native Android ViewBinding & Material 3 components</span>
+              </div>
+              <div class="arch-check-item">
+                <span class="arch-check-icon">&#10003;</span>
+                <span>Active-LOW relay drivers with startup twitch protection</span>
+              </div>
+              <div class="arch-check-item">
+                <span class="arch-check-icon">&#10003;</span>
+                <span>Hysteresis band (30°C ON / 29°C OFF) preventing relay chattering</span>
+              </div>
+            </div>
+            <div style="margin-top: 24px;">
+              <a href="specs.html#protocol" class="btn btn-secondary btn-md">
+                <span>View Full System Specs, Commands & Pinouts</span>
+                <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specifications Grid -->
+        <div class="specs-grid" id="specifications">
+          <div class="spec-item">
+            <span class="spec-label">PLATFORM COMPATIBILITY</span>
+            <h4>Android 8.0+</h4>
+            <p>Compatible with Oreo up to Android 16 (API 26–36)</p>
+          </div>
+          <div class="spec-item spec-highlight">
+            <span class="spec-label">AUTO-SYNCED APK SIZE</span>
+            <h4 class="release-size-tag">5.45 MB</h4>
+            <p>Direct from latest GitHub Release asset</p>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">PROTOCOL</span>
+            <h4>Bluetooth 4.0+</h4>
+            <p>Standard Classic Serial Port Profile (SPP)</p>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">CALIBRATED TRANSIT</span>
+            <h4>25 Seconds</h4>
+            <p>Calibrated curtain motorized transit timing</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start Installation -->
+    <section class="section" id="install">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Quick Start</span>
+          <h2 class="section-title">Get Started in 3 Steps</h2>
+          <p class="section-desc">Download and install the APK directly to any compatible Android smartphone.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon-box step-number">1</div>
+            <h3 class="feature-title">Download APK</h3>
+            <p class="feature-text">Click the download button to save <strong class="release-version-tag">v1.0.4</strong> (`app-release.apk`) directly to your Android device.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-box step-number">2</div>
+            <h3 class="feature-title">Enable Unknown Apps</h3>
+            <p class="feature-text">If prompted by Android, tap <em>Settings</em> and toggle <em>Allow from this source</em> to complete the installation.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-box step-number">3</div>
+            <h3 class="feature-title">Pair & Connect</h3>
+            <p class="feature-text">Pair with <strong>"NexusHome"</strong> in your phone's Bluetooth settings, open the app, and tap <em>Connect</em>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <h2>Ready to Upgrade Your Home?</h2>
+          <p>Download the latest official release now and experience fast, private, and automated smart home control.</p>
+          <div class="cta-buttons">
+            <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-lg dynamic-apk-link" id="btnCtaDownload">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="22" height="22">
+                <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+              </svg>
+              <span>Download APK (<span class="release-version-tag">v1.0.4</span> • <span class="release-size-tag">5.45 MB</span>)</span>
+            </a>
+            <a href="https://github.com/oursprojects/NexusHome/releases" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-lg" id="btnCtaAllReleases">
+              <span>View All Releases on GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section" id="team">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Project Team</span>
+          <h2 class="section-title">The Minds Behind NexusHome</h2>
+          <p class="section-desc">Developed as a Capstone Project for smart-home automation and ambient environmental intelligence.</p>
+        </div>
+
+        <div class="team-grid">
+          <!-- Leader -->
+          <div class="team-card">
+            <div class="team-avatar">
+              <img src="assets/team/MikeRynoSantiago.jpg" alt="Mike Ryno Santiago" class="team-photo" loading="lazy" onerror="this.onerror=null;this.src='assets/PROJECT TEAM/MikeRynoSantiago.jpg'">
+            </div>
+            <h3 class="team-name">Mike Ryno Santiago</h3>
+            <div class="team-role">Project Leader & Developer</div>
+          </div>
+
+          <!-- Member 1 -->
+          <div class="team-card">
+            <div class="team-avatar">
+              <img src="assets/team/Karyllle.jpg" alt="Karylle Jamie Ladera Marimon" class="team-photo" loading="lazy" onerror="this.onerror=null;this.src='assets/PROJECT TEAM/Karyllle.jpg'">
+            </div>
+            <h3 class="team-name">Karylle Jamie Ladera Marimon</h3>
+            <div class="team-role">Project Member</div>
+          </div>
+
+          <!-- Member 2 -->
+          <div class="team-card">
+            <div class="team-avatar">
+              <img src="assets/team/JestoniFlores.jpg" alt="Jestoni Flores" class="team-photo" loading="lazy" onerror="this.onerror=null;this.src='assets/PROJECT TEAM/JestoniFlores.jpg'">
+            </div>
+            <h3 class="team-name">Jestoni Flores</h3>
+            <div class="team-role">Project Member</div>
+          </div>
+
+          <!-- Member 3 -->
+          <div class="team-card">
+            <div class="team-avatar">
+              <img src="assets/team/DeejayAngelo.jpg" alt="Deejay Angelo de La Cruz" class="team-photo" loading="lazy" onerror="this.onerror=null;this.src='assets/PROJECT TEAM/DeejayAngelo.jpg'">
+            </div>
+            <h3 class="team-name">Deejay Angelo de La Cruz</h3>
+            <div class="team-role">Project Member</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-copy">
+        <img src="assets/nexuslogo.png" alt="NexusHome" width="24" height="24">
+        <span>&copy; 2026 <strong><span class="brand-nexus">Nexus</span><span class="brand-home">Home</span></strong> • Capstone Project. All rights reserved.</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="#hero">Back to Top</a>
+        <a href="specs.html#protocol">Commands & Specs</a>
+        <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer">Source Code</a>
+        <a href="https://github.com/oursprojects/NexusHome/releases" target="_blank" rel="noopener noreferrer">Releases</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Screenshot Lightbox Modal -->
+  <div class="lightbox-modal" id="imageLightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-dialog">
+      <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close Lightbox">&times;</button>
+      <div class="lightbox-img-wrapper">
+        <img src="" alt="Full Resolution App Screen" id="lightboxImg" class="lightbox-image">
+      </div>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- Main Website Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

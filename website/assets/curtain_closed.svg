@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none">
+  <!-- Left curtain closed -->
+  <path d="M2 2v20" stroke="#5B6B84" stroke-width="2" stroke-linecap="round"/>
+  <path d="M2 2h10c-2 4-2 10 0 20H2V2z" fill="#5B6B84" fill-opacity="0.25" stroke="#5B6B84" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right curtain closed -->
+  <path d="M22 2v20" stroke="#5B6B84" stroke-width="2" stroke-linecap="round"/>
+  <path d="M22 2H12c2 4 2 10 0 20h10V2z" fill="#5B6B84" fill-opacity="0.25" stroke="#5B6B84" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Curtain rod -->
+  <path d="M1 2h22" stroke="#5B6B84" stroke-width="2" stroke-linecap="round"/>
+  <!-- Center seam dots -->
+  <path d="M12 4v1m0 3v1m0 3v1m0 3v1m0 3v1" stroke="#5B6B84" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

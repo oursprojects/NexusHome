@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none">
+  <!-- Left curtain pulled open -->
+  <path d="M2 2v20" stroke="#355FE8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M2 2h6c-4 4-4 10 0 20H2V2z" fill="#355FE8" fill-opacity="0.3" stroke="#355FE8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right curtain pulled open -->
+  <path d="M22 2v20" stroke="#355FE8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M22 2h-6c4 4 4 10 0 20h6V2z" fill="#355FE8" fill-opacity="0.3" stroke="#355FE8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Curtain rod -->
+  <path d="M1 2h22" stroke="#355FE8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sunlight rays in middle -->
+  <path d="M12 8v8M9 12h6" stroke="#F09A4A" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

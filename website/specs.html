@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Technical Specifications & System Architecture - NexusHome</title>
+  <meta name="title" content="Technical Specifications & System Architecture - NexusHome">
+  <meta name="description" content="Complete engineering reference for NexusHome: ESP32 hardware pinouts, 12V 7Ah battery & 20W solar subsystem, 3-stage voltage envelope, blackout recovery engine, and Bluetooth serial protocol.">
+  <meta name="keywords" content="NexusHome, System Architecture, ESP32 Pinout, Solar Charge Controller, Battery Backup, Bluetooth SPP, IoT Firmware, Capstone">
+  <meta name="author" content="Team Nexus">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/nexuslogo.png">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+  <!-- Top Navigation -->
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand" id="navBrand">
+          <img src="assets/nexuslogo.png" alt="NexusHome Logo">
+          <span><span class="brand-nexus">Nexus</span><span class="brand-home">Home</span></span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="#power" class="nav-link">Power & Solar</a></li>
+          <li><a href="#curtain" class="nav-link">Curtain Engine</a></li>
+          <li><a href="#pinouts" class="nav-link">Pinouts</a></li>
+          <li><a href="#protocol" class="nav-link">Commands & Protocol</a></li>
+          <li><a href="#automation" class="nav-link">Automation</a></li>
+          <li class="nav-mobile-item">
+            <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-sm dynamic-apk-link nav-mobile-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+              </svg>
+              <span>Download APK</span>
+            </a>
+          </li>
+          <li class="nav-mobile-item">
+            <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm nav-mobile-btn">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" id="btnNavGithub">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <button type="button" class="nav-toggle" id="btnNavToggle" aria-label="Toggle Navigation Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Specifications Content -->
+  <main>
+    <!-- Page Hero Header -->
+    <section class="page-hero">
+      <div class="container">
+        <a href="index.html" class="back-link">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back to Main Showcase</span>
+        </a>
+        <div class="section-head" style="text-align: left; margin-bottom: 24px;">
+          <span class="section-tag">Engineering Reference</span>
+          <h1 class="section-title">Technical Specifications & System Architecture</h1>
+          <p class="section-desc" style="max-width: 880px;">Consolidated low-level engineering documentation for the NexusHome offline ESP32 platform, including dual-source power and solar architecture, 3-stage battery envelope, blackout recovery engine, hardware pinouts, and Bluetooth serial protocol.</p>
+        </div>
+
+        <!-- 4 Quick Key Metrics -->
+        <div class="specs-grid" style="margin-top: 24px;">
+          <div class="spec-item">
+            <span class="spec-label">COOLING FAN</span>
+            <h4>15 Watts</h4>
+            <p>12V DC appliance (1.25A @ 12V) on GPIO15 relay</p>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">SMART LIGHTING</span>
+            <h4>7 Watts</h4>
+            <p>12V DC appliance (0.58A @ 12V) on GPIO2 relay</p>
+          </div>
+          <div class="spec-item spec-highlight">
+            <span class="spec-label">BATTERY STORAGE</span>
+            <h4>12V 7Ah SLA</h4>
+            <p>84Wh nominal energy backed by 20W solar PV</p>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">MOTORIZED CURTAIN</span>
+            <h4>25 Seconds</h4>
+            <p>JGY-370 12V 30RPM worm-gear motor (GPIO18/19)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Power & Solar Subsystem Section -->
+    <section class="section" id="power">
+      <div class="container">
+        <div class="section-head" style="text-align: left;">
+          <span class="section-tag">Power Infrastructure</span>
+          <h2 class="section-title">Dual-Source Power & Solar Backup Architecture</h2>
+          <p class="section-desc">Designed with an automatic transfer module, 12V 7Ah sealed lead-acid storage, and solar replenishment to guarantee 24/7 autonomous home automation without cloud or internet reliance.</p>
+        </div>
+
+        <!-- 3-Card Power Architecture Grid -->
+        <div class="power-grid">
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Dual-Input Power Supply</h3>
+                <span class="power-subtag">AC Mains + 20W Solar PV</span>
+              </div>
+            </div>
+            <p class="power-text">The system operates continuously via a <strong>12V 5A regulated adapter (60W max output)</strong> paired with a <strong>20W monocrystalline solar panel</strong> feeding a <strong>10A PWM solar charge controller</strong> for green, off-grid energy replenishment.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">12V 5A (60W) Adapter</span>
+              <span class="spec-pill">20W Solar Panel</span>
+              <span class="spec-pill">10A PWM Controller</span>
+            </div>
+          </div>
+
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 3H8M12 3v4"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Automatic Backup & Battery</h3>
+                <span class="power-subtag">XH-M350 + 12V 7Ah SLA (84Wh)</span>
+              </div>
+            </div>
+            <p class="power-text">An integrated <strong>XH-M350 automatic transfer module</strong> seamlessly switches to the <strong>12V 7Ah sealed lead-acid battery (84Wh nominal)</strong> the instant AC power drops, keeping firmware and relays active with zero reboot interruption.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">XH-M350 Switchover</span>
+              <span class="spec-pill">12V 7Ah Battery</span>
+              <span class="spec-pill">84 Wh Nominal Capacity</span>
+            </div>
+          </div>
+
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
+                  <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Dual-Rail Electrical Isolation</h3>
+                <span class="power-subtag">LM2596 Step-Down Regulator</span>
+              </div>
+            </div>
+            <p class="power-text">High-current appliances (15W Fan, 7W Light, JGY-370 Motor) run on the direct <strong>12V high-power rail</strong>, while an <strong>LM2596 high-efficiency buck converter</strong> isolates sensitive 5V/3.3V logic (ESP32, VC-02, OLED, sensors) from inductive noise.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">LM2596 Buck Converter</span>
+              <span class="spec-pill">12V High-Power Rail</span>
+              <span class="spec-pill">5V/3.3V Logic Rail</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Stage Voltage Guard Container -->
+        <div class="voltage-guard-container">
+          <div class="voltage-guard-header">
+            <h3>Battery Safety Envelope & 3-Stage Voltage Guard</h3>
+            <p>To maximize SLA battery lifespan and eliminate destructive deep discharge, the PWM controller enforces strict hardware thresholds:</p>
+          </div>
+          <div class="voltage-cards-grid">
+            <div class="voltage-card volt-float">
+              <div class="volt-badge">13.7V</div>
+              <h4>Float Charge Stage</h4>
+              <p>Continuous trickle maintenance charging that preserves battery capacity at full saturation without boiling off electrolyte or generating internal heat.</p>
+            </div>
+            <div class="voltage-card volt-reconnect">
+              <div class="volt-badge">12.6V</div>
+              <h4>Load Reconnect Threshold</h4>
+              <p>Once LVD triggers, loads remain safely isolated until the battery recharges to 12.6V. This hysteresis gap prevents harmful rapid on/off cycling caused by surface voltage bounce.</p>
+            </div>
+            <div class="voltage-card volt-lvd">
+              <div class="volt-badge">10.7V</div>
+              <h4>Low-Voltage Disconnect (LVD)</h4>
+              <p>Critical hardware cutoff point. When battery drops to 10.7V under load, output disconnects immediately to shield the SLA cell from irreversible sulfation and permanent damage.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nominal Runtime Estimation Grid -->
+        <div class="runtime-section">
+          <h3 class="runtime-title">Nominal Battery Runtimes (84Wh Battery Capacity)</h3>
+          <div class="runtime-grid">
+            <div class="runtime-card">
+              <div class="runtime-icon">🌀</div>
+              <div class="runtime-val">~5h 36m</div>
+              <div class="runtime-app">Smart Fan Only</div>
+              <div class="runtime-meta">15W Appliance (1.25A @ 12V)</div>
+              <div class="runtime-calc">84Wh ÷ 15W = 5.60 Hours</div>
+            </div>
+            <div class="runtime-card">
+              <div class="runtime-icon">💡</div>
+              <div class="runtime-val">~12h 00m</div>
+              <div class="runtime-app">Smart Light Only</div>
+              <div class="runtime-meta">7W Appliance (0.58A @ 12V)</div>
+              <div class="runtime-calc">84Wh ÷ 7W = 12.00 Hours</div>
+            </div>
+            <div class="runtime-card highlight">
+              <div class="runtime-icon">⚡</div>
+              <div class="runtime-val">~3h 49m</div>
+              <div class="runtime-app">Fan + Light Combined</div>
+              <div class="runtime-meta">22W Total Load (1.83A @ 12V)</div>
+              <div class="runtime-calc">84Wh ÷ 22W = 3.82 Hours</div>
+            </div>
+          </div>
+          <div class="runtime-footnote">
+            <span class="footnote-tag">Engineering Note</span>
+            <span>Runtimes are theoretical calculations based on the battery's nominal 84Wh capacity (12V × 7Ah). Real-world operating duration until the 10.7V LVD cutoff will vary depending on ambient temperature, Peukert discharge effect, battery age, buck converter efficiency, and ESP32 / OLED logic consumption.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Motorized Curtain & Blackout Recovery Section -->
+    <section class="section" id="curtain">
+      <div class="container">
+        <div class="section-head" style="text-align: left;">
+          <span class="section-tag">Actuation & Memory</span>
+          <h2 class="section-title">Zero-Sensor Motorized Curtain & Blackout Recovery Engine</h2>
+          <p class="section-desc">The JGY-370 12V high-torque worm-gear motor (30 RPM) drives the physical curtain through a calibrated 25-second traverse without mechanical limit switches. The ESP32 tracks millisecond runtime in memory and checkpoints progress to NVS flash every 500 ms, enabling automated recovery if power is interrupted mid-transit.</p>
+        </div>
+
+        <div class="curtain-recovery-box" style="margin-top: 0;">
+          <div class="curtain-recovery-header">
+            <h3>Blackout Recovery State Flow</h3>
+            <p>How the firmware guarantees curtain integrity across unexpected power disruptions:</p>
+          </div>
+          <div class="recovery-steps-grid">
+            <div class="recovery-step-node">
+              <span class="recovery-step-num">1</span>
+              <h4>Asynchronous Runtime</h4>
+              <p>Non-blocking cooperative timers drive OPEN (GPIO18) and CLOSE (GPIO19) relays for 25,000 ms, animating OLED progress while servicing Bluetooth serial in parallel.</p>
+            </div>
+            <div class="recovery-step-node">
+              <span class="recovery-step-num">2</span>
+              <h4>500ms NVS Checkpointing</h4>
+              <p>Every 500 milliseconds during movement, current state and accumulated elapsed milliseconds are written to non-volatile Preferences flash storage.</p>
+            </div>
+            <div class="recovery-step-node">
+              <span class="recovery-step-num">3</span>
+              <h4>Blackout Interruption</h4>
+              <p>If power fails mid-transit (e.g. second 10 of a 25s closing stroke), the motor stops immediately. The saved 10-second elapsed position remains permanently preserved in flash.</p>
+            </div>
+            <div class="recovery-step-node">
+              <span class="recovery-step-num">4</span>
+              <h4>Autonomous Resumption</h4>
+              <p>Upon power restoration, the ESP32 reboots, detects an incomplete transit, calculates the remaining 15 seconds, and automatically drives the motor until 100% closed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Hardware Pinout Table Section -->
+    <section class="section" id="pinouts">
+      <div class="container">
+        <div class="section-head" style="text-align: left;">
+          <span class="section-tag">Hardware Pinout</span>
+          <h2 class="section-title">ESP32 DevKit V1 GPIO Pinout Matrix</h2>
+          <p class="section-desc">Complete low-level electrical pin mapping configured in the official firmware for sensors, relays, buzzer, OLED, and voice module.</p>
+        </div>
+
+        <div class="tech-table-container" style="margin-top: 0;">
+          <div class="table-responsive-wrapper">
+            <table class="tech-table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>ESP32 Pin</th>
+                  <th>Electrical Rating</th>
+                  <th>Operating Logic & Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>DHT22 / AM2302</strong></td>
+                  <td><span class="pin-badge">GPIO33</span></td>
+                  <td>3.3V Digital Input</td>
+                  <td>Climate sensing sampled every 2.5s; 3-consecutive-failure fallback protection.</td>
+                </tr>
+                <tr>
+                  <td><strong>Smart Light Relay</strong></td>
+                  <td><span class="pin-badge">GPIO2</span></td>
+                  <td>12V DC • 7W (0.58A)</td>
+                  <td>Optocoupled active-LOW switching with NVS boot persistence.</td>
+                </tr>
+                <tr>
+                  <td><strong>Smart Fan Relay</strong></td>
+                  <td><span class="pin-badge">GPIO15</span></td>
+                  <td>12V DC • 15W (1.25A)</td>
+                  <td>Optocoupled active-LOW; automated ON at ≥30°C and OFF at ≤29°C.</td>
+                </tr>
+                <tr>
+                  <td><strong>Curtain OPEN Relay</strong></td>
+                  <td><span class="pin-badge">GPIO18</span></td>
+                  <td>12V DC • JGY-370 Motor</td>
+                  <td>Active-LOW driver powering motor clockwise for calibrated 25s traverse.</td>
+                </tr>
+                <tr>
+                  <td><strong>Curtain CLOSE Relay</strong></td>
+                  <td><span class="pin-badge">GPIO19</span></td>
+                  <td>12V DC • JGY-370 Motor</td>
+                  <td>Active-LOW driver powering motor counter-clockwise for calibrated 25s traverse.</td>
+                </tr>
+                <tr>
+                  <td><strong>5V Active Buzzer</strong></td>
+                  <td><span class="pin-badge">GPIO13</span></td>
+                  <td>5V DC Digital Output</td>
+                  <td>Provides 1.5s audible alert on automatic fan triggers and command audio cues.</td>
+                </tr>
+                <tr>
+                  <td><strong>VC-02 Voice AI (RX/TX)</strong></td>
+                  <td><span class="pin-badge">GPIO16 / GPIO17</span></td>
+                  <td>UART @ 9600 Baud</td>
+                  <td>Offline speech recognition with "Nexus" wake word and 350ms debounce guard.</td>
+                </tr>
+                <tr>
+                  <td><strong>SSD1309 OLED (SDA/SCL)</strong></td>
+                  <td><span class="pin-badge">GPIO21 / GPIO22</span></td>
+                  <td>I²C Bus (128×64)</td>
+                  <td>2.42" high-contrast status UI animating startup, live climate, and curtain transit.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Bluetooth Protocol & Telemetry Section -->
+    <section class="section" id="protocol">
+      <div class="container">
+        <div class="section-head" style="text-align: left;">
+          <span class="section-tag">Serial Protocol</span>
+          <h2 class="section-title">Bluetooth SPP Command Protocol & Telemetry</h2>
+          <p class="section-desc">Single-byte ASCII command structure driving instantaneous hardware response with zero parsing latency over classic Bluetooth RFCOMM.</p>
+        </div>
+
+        <div class="tech-table-container" style="margin-top: 0;">
+          <div class="table-responsive-wrapper">
+            <table class="tech-table">
+              <thead>
+                <tr>
+                  <th>Command Byte</th>
+                  <th>Action / Function</th>
+                  <th>Hardware Actuator</th>
+                  <th>NVS Stored</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="cmd-badge">A</span> / <span class="cmd-badge">a</span></td>
+                  <td>Turn Smart Light ON / OFF</td>
+                  <td>GPIO2 Relay (12V 7W Light)</td>
+                  <td><span style="color: var(--accent-green);">&#10003; Yes</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cmd-badge">B</span> / <span class="cmd-badge">b</span></td>
+                  <td>Turn Smart Fan ON / OFF</td>
+                  <td>GPIO15 Relay (12V 15W Fan)</td>
+                  <td><span style="color: var(--accent-green);">&#10003; Yes</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cmd-badge">C</span> / <span class="cmd-badge">c</span></td>
+                  <td>Switch Mode: Automatic (C) / Manual (c)</td>
+                  <td>ESP32 Internal Hysteresis Core</td>
+                  <td><span style="color: var(--accent-green);">&#10003; Yes</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cmd-badge">D</span> / <span class="cmd-badge">d</span></td>
+                  <td>Motorized Curtain: OPEN (D) / CLOSE (d)</td>
+                  <td>GPIO18 / GPIO19 Relays (JGY-370)</td>
+                  <td><span style="color: var(--accent-green);">&#10003; Yes (every 500ms)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cmd-badge">S</span></td>
+                  <td>Request Complete System Telemetry Stream</td>
+                  <td>Broadcasts full system telemetry string</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Offline Voice Recognition Commands Table -->
+          <div style="margin-top: 36px;">
+            <div style="margin-bottom: 14px;">
+              <span class="section-tag" style="margin-bottom: 6px;">Voice Interface</span>
+              <h3 style="font-size: 1.35rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-cyan);">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+                </svg>
+                <span>VC-02 Offline Voice Commands (Wake Word: "Nexus")</span>
+              </h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Speech recognition processed on-chip by the AI-Thinker VC-02 neural-audio module with 350ms debounce and UART transmission to the ESP32.</p>
+            </div>
+
+            <div class="table-responsive-wrapper">
+              <table class="tech-table">
+                <thead>
+                  <tr>
+                    <th>Voice Command Phrase</th>
+                    <th>UART Output</th>
+                    <th>Hardware Actuation</th>
+                    <th>Execution Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"lights on"</strong></td>
+                    <td><span class="cmd-badge">A</span></td>
+                    <td>GPIO2 Relay (7W LED Light)</td>
+                    <td>Activates smart light, animates OLED, saves state to NVS</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"lights off"</strong></td>
+                    <td><span class="cmd-badge">a</span></td>
+                    <td>GPIO2 Relay (7W LED Light)</td>
+                    <td>Deactivates smart light, animates OLED, saves state to NVS</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"fan on"</strong></td>
+                    <td><span class="cmd-badge">B</span></td>
+                    <td>GPIO15 Relay (15W Cooling Fan)</td>
+                    <td>Activates cooling fan, animates OLED, saves state to NVS</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"fan off"</strong></td>
+                    <td><span class="cmd-badge">b</span></td>
+                    <td>GPIO15 Relay (15W Cooling Fan)</td>
+                    <td>Deactivates cooling fan, animates OLED, saves state to NVS</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"open curtain"</strong></td>
+                    <td><span class="cmd-badge">D</span></td>
+                    <td>GPIO18/19 Relays (JGY-370)</td>
+                    <td>Drives motor forward for calibrated 25-second full open cycle</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"close curtain"</strong></td>
+                    <td><span class="cmd-badge">d</span></td>
+                    <td>GPIO18/19 Relays (JGY-370)</td>
+                    <td>Drives motor reverse for calibrated 25-second full close cycle</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"automatic mode"</strong></td>
+                    <td><span class="cmd-badge">C</span></td>
+                    <td>Climate Control Engine</td>
+                    <td>Enables DHT22 automatic fan hysteresis (≥30°C ON / ≤29°C OFF)</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"manual mode"</strong></td>
+                    <td><span class="cmd-badge">c</span></td>
+                    <td>Direct Control Engine</td>
+                    <td>Disables auto temperature triggers; direct user control only</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: #60A5FA;">"goodbye"</strong> / <strong style="color: #60A5FA;">"bye"</strong></td>
+                    <td><span class="cmd-badge" style="color: #38BDF8; background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.35);">Standby</span></td>
+                    <td>VC-02 Module Standby</td>
+                    <td>Voice assistant acknowledgment tone & returns to low-power standby</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Live Telemetry Stream Card -->
+          <div class="telemetry-stream-card">
+            <h4>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <span>Live Serial Telemetry Stream Format</span>
+            </h4>
+            <code class="telemetry-code">STATUS|&lt;temperature&gt;|&lt;light&gt;|&lt;fan&gt;|&lt;auto&gt;|&lt;curtainOpenSide&gt;</code>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 10px;">
+              Example Packet: <code style="color: var(--brand-cyan); font-family: var(--font-mono);">STATUS|28.5|1|0|1|1</code> translates to 28.5°C ambient temperature, Light ON, Fan OFF, Auto Mode ACTIVE, and Curtain fully OPEN.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Climate Automation & Offline Voice Logic -->
+    <section class="section" id="automation">
+      <div class="container">
+        <div class="section-head" style="text-align: left;">
+          <span class="section-tag">Edge Intelligence</span>
+          <h2 class="section-title">Climate Automation & Offline Voice Control Rules</h2>
+          <p class="section-desc">Automated closed-loop intelligence operating completely on the ESP32 and VC-02 hardware with zero internet dependency.</p>
+        </div>
+
+        <div class="power-grid">
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Automatic Climate Mode</h3>
+                <span class="power-subtag">Hysteresis Control Core</span>
+              </div>
+            </div>
+            <p class="power-text">When Automatic Mode is active, the ESP32 samples the DHT22 every 2.5s. If temperature reaches <strong>&ge;30°C</strong>, the fan turns ON accompanied by a <strong>1.5-second buzzer notification</strong>. When temperature drops to <strong>&le;29°C</strong>, the fan turns OFF. The 1°C deadband prevents relay chattering.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">&ge;30°C Fan ON</span>
+              <span class="spec-pill">&le;29°C Fan OFF</span>
+              <span class="spec-pill">1.5s Buzzer Alert</span>
+            </div>
+          </div>
+
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Manual Mode Override</h3>
+                <span class="power-subtag">Direct User Actuation</span>
+              </div>
+            </div>
+            <p class="power-text">Selecting Manual Mode disables temperature-triggered fan switching and clears automated overrides. When manual mode is initiated, the fan is initially turned OFF for safety. The user retains complete direct control over light, fan, and curtains via mobile app or offline voice commands.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">Overrides Disabled</span>
+              <span class="spec-pill">Safety Auto-OFF</span>
+              <span class="spec-pill">Direct User Control</span>
+            </div>
+          </div>
+
+          <div class="power-card">
+            <div class="power-card-header">
+              <div class="power-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+                </svg>
+              </div>
+              <div>
+                <h3>VC-02 Offline Voice AI</h3>
+                <span class="power-subtag">Local Edge Speech Engine</span>
+              </div>
+            </div>
+            <p class="power-text">The AI-Thinker VC-02 module runs completely offline on dedicated neural-audio hardware. It continuously listens for the wake word <strong>"Nexus"</strong>. Commands are transferred over UART at 9600 baud with an integrated <strong>350ms repeat-command debounce guard</strong> to prevent multiple triggers.</p>
+            <div class="power-specs-pills">
+              <span class="spec-pill">Wake Word "Nexus"</span>
+              <span class="spec-pill">350ms Debounce</span>
+              <span class="spec-pill">UART 9600 Baud</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <h2>Ready to Deploy NexusHome?</h2>
+          <p>Download the latest official Android APK or inspect the complete open-source Kotlin and ESP32 firmware repository on GitHub.</p>
+          <div class="cta-buttons">
+            <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-lg dynamic-apk-link" id="btnCtaDownload">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="22" height="22">
+                <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+              </svg>
+              <span>Download APK (<span class="release-version-tag">v1.0.4</span> • <span class="release-size-tag">5.45 MB</span>)</span>
+            </a>
+            <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-lg" id="btnCtaAllReleases">
+              <span>View Source on GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-copy">
+        <img src="assets/nexuslogo.png" alt="NexusHome" width="24" height="24">
+        <span>&copy; 2026 <strong><span class="brand-nexus">Nexus</span><span class="brand-home">Home</span></strong> • Capstone Project. All rights reserved.</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#power">Power & Solar</a>
+        <a href="#curtain">Curtain Engine</a>
+        <a href="#pinouts">Pinouts</a>
+        <a href="#protocol">Protocol</a>
+        <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer">Source Code</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
