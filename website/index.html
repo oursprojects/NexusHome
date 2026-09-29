@@ -21,6 +21,12 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/nexuslogo.png">
 
+  <!-- Preload Critical Showcase Hardware Assets -->
+  <link rel="preload" as="image" href="assets/NexushomeHardwareFrontView.png">
+  <link rel="preload" as="image" href="assets/NexushomeHardwareInsidewithLabels.jpg">
+  <link rel="preload" as="image" href="assets/NexushomeHardwareleftsideiffacingfrontview.png">
+  <link rel="preload" as="image" href="assets/NexusHomeMainBoard.jpg">
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -260,66 +266,93 @@
           <p class="section-desc">Explore the official NexusHome Android application. Experience Material 3 architecture, day & night themes, offline Room DB history, and instant telemetry.</p>
         </div>
 
-        <div class="screenshots-grid">
-          <!-- Screenshot 1: Connected Live Control -->
-          <div class="screenshot-card" data-full="assets/exampleconnectedscreen.jpg" data-title="Live Control Dashboard">
-            <div class="screenshot-preview">
-              <img src="assets/exampleconnectedscreen.jpg" alt="Live Control Dashboard Screen" loading="lazy">
+        <!-- Carousel Controls & Track -->
+        <div class="screenshots-carousel-wrapper">
+          <button type="button" class="carousel-arrow carousel-arrow-prev" id="btnScreensPrev" aria-label="Previous App Screen" title="Previous Screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <div class="screenshots-carousel" id="screenshotsTrack">
+            <!-- Screenshot 1: Connected Live Control -->
+            <div class="screenshot-card" data-index="0" data-full="assets/exampleconnectedscreen.jpg" data-title="Live Control Dashboard">
+              <div class="screenshot-preview">
+                <img src="assets/exampleconnectedscreen.jpg" alt="Live Control Dashboard Screen" loading="lazy">
+              </div>
+              <div class="screenshot-body">
+                <div class="screenshot-badge">Primary Dashboard</div>
+                <h3 class="screenshot-title">Live Control Dashboard</h3>
+                <p class="screenshot-desc">Direct Bluetooth SPP telemetry displaying real-time DHT22 ambient room temperature, tactile fan & light switches, and 25s motorized curtain transit progress.</p>
+              </div>
             </div>
-            <div class="screenshot-body">
-              <div class="screenshot-badge">Primary Dashboard</div>
-              <h3 class="screenshot-title">Live Control Dashboard</h3>
-              <p class="screenshot-desc">Direct Bluetooth SPP telemetry displaying real-time DHT22 ambient room temperature, tactile fan & light switches, and 25s motorized curtain transit progress.</p>
+
+            <!-- Screenshot 2: Dark Mode Screen -->
+            <div class="screenshot-card" data-index="1" data-full="assets/darkmodescreen.jpg" data-title="Dark Theme Interface">
+              <div class="screenshot-preview">
+                <img src="assets/darkmodescreen.jpg" alt="Dark Mode Screen" loading="lazy">
+              </div>
+              <div class="screenshot-body">
+                <div class="screenshot-badge">OLED Theme</div>
+                <h3 class="screenshot-title">Deep Dark Theme</h3>
+                <p class="screenshot-desc">High-contrast dark palette tailored for night-time comfort and lower battery drain on OLED smartphone displays without compromising visibility.</p>
+              </div>
+            </div>
+
+            <!-- Screenshot 3: Light Mode Screen -->
+            <div class="screenshot-card" data-index="2" data-full="assets/lightmodescreen.jpg" data-title="Light Theme Interface">
+              <div class="screenshot-preview">
+                <img src="assets/lightmodescreen.jpg" alt="Light Mode Screen" loading="lazy">
+              </div>
+              <div class="screenshot-body">
+                <div class="screenshot-badge">Light Theme</div>
+                <h3 class="screenshot-title">Clean Daytime View</h3>
+                <p class="screenshot-desc">Refined daytime aesthetic with clear hierarchy, vibrant state highlights, and sharp typography that remains crystal clear under direct sunlight.</p>
+              </div>
+            </div>
+
+            <!-- Screenshot 4: Command History Area Screen -->
+            <div class="screenshot-card" data-index="3" data-full="assets/commandhistoryareascreen.jpg" data-title="Room Database Command Logs">
+              <div class="screenshot-preview">
+                <img src="assets/commandhistoryareascreen.jpg" alt="Command History Screen" loading="lazy">
+              </div>
+              <div class="screenshot-body">
+                <div class="screenshot-badge">SQLite Room DB</div>
+                <h3 class="screenshot-title">Offline Command History</h3>
+                <p class="screenshot-desc">Audit logs stored safely inside local Android SQLite storage, keeping a timestamped trail of fan, light, and curtain events with one-tap clearing.</p>
+              </div>
+            </div>
+
+            <!-- Screenshot 5: Quick Start Guide Area Screen -->
+            <div class="screenshot-card" data-index="4" data-full="assets/quickstartguideareascreen.jpg" data-title="Built-In Quick Start Guide">
+              <div class="screenshot-preview">
+                <img src="assets/quickstartguideareascreen.jpg" alt="Quick Start Guide Screen" loading="lazy">
+              </div>
+              <div class="screenshot-body">
+                <div class="screenshot-badge">On-Device Documentation</div>
+                <h3 class="screenshot-title">Quick Start Guide</h3>
+                <p class="screenshot-desc">Embedded user manual available entirely offline, covering Bluetooth pairing, curtain calibration, and automatic temperature threshold rules (≥30°C ON / ≤29°C OFF).</p>
+              </div>
             </div>
           </div>
 
-          <!-- Screenshot 2: Dark Mode Screen -->
-          <div class="screenshot-card" data-full="assets/darkmodescreen.jpg" data-title="Dark Theme Interface">
-            <div class="screenshot-preview">
-              <img src="assets/darkmodescreen.jpg" alt="Dark Mode Screen" loading="lazy">
-            </div>
-            <div class="screenshot-body">
-              <div class="screenshot-badge">OLED Theme</div>
-              <h3 class="screenshot-title">Deep Dark Theme</h3>
-              <p class="screenshot-desc">High-contrast dark palette tailored for night-time comfort and lower battery drain on OLED smartphone displays without compromising visibility.</p>
-            </div>
-          </div>
+          <button type="button" class="carousel-arrow carousel-arrow-next" id="btnScreensNext" aria-label="Next App Screen" title="Next Screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
 
-          <!-- Screenshot 3: Light Mode Screen -->
-          <div class="screenshot-card" data-full="assets/lightmodescreen.jpg" data-title="Light Theme Interface">
-            <div class="screenshot-preview">
-              <img src="assets/lightmodescreen.jpg" alt="Light Mode Screen" loading="lazy">
-            </div>
-            <div class="screenshot-body">
-              <div class="screenshot-badge">Light Theme</div>
-              <h3 class="screenshot-title">Clean Daytime View</h3>
-              <p class="screenshot-desc">Refined daytime aesthetic with clear hierarchy, vibrant state highlights, and sharp typography that remains crystal clear under direct sunlight.</p>
-            </div>
+        <!-- Carousel Navigation Dots & Counter -->
+        <div class="carousel-footer">
+          <div class="carousel-dots" id="screenshotsDots" role="tablist" aria-label="Screenshots Carousel Pagination">
+            <button type="button" class="carousel-dot active" data-slide="0" aria-label="Slide 1: Live Control Dashboard"></button>
+            <button type="button" class="carousel-dot" data-slide="1" aria-label="Slide 2: Deep Dark Theme"></button>
+            <button type="button" class="carousel-dot" data-slide="2" aria-label="Slide 3: Clean Daytime View"></button>
+            <button type="button" class="carousel-dot" data-slide="3" aria-label="Slide 4: Offline Command History"></button>
+            <button type="button" class="carousel-dot" data-slide="4" aria-label="Slide 5: Quick Start Guide"></button>
           </div>
-
-          <!-- Screenshot 4: Command History Area Screen -->
-          <div class="screenshot-card" data-full="assets/commandhistoryareascreen.jpg" data-title="Room Database Command Logs">
-            <div class="screenshot-preview">
-              <img src="assets/commandhistoryareascreen.jpg" alt="Command History Screen" loading="lazy">
-            </div>
-            <div class="screenshot-body">
-              <div class="screenshot-badge">SQLite Room DB</div>
-              <h3 class="screenshot-title">Offline Command History</h3>
-              <p class="screenshot-desc">Audit logs stored safely inside local Android SQLite storage, keeping a timestamped trail of fan, light, and curtain events with one-tap clearing.</p>
-            </div>
-          </div>
-
-          <!-- Screenshot 5: Quick Start Guide Area Screen -->
-          <div class="screenshot-card" data-full="assets/quickstartguideareascreen.jpg" data-title="Built-In Quick Start Guide">
-            <div class="screenshot-preview">
-              <img src="assets/quickstartguideareascreen.jpg" alt="Quick Start Guide Screen" loading="lazy">
-            </div>
-            <div class="screenshot-body">
-              <div class="screenshot-badge">On-Device Documentation</div>
-              <h3 class="screenshot-title">Quick Start Guide</h3>
-              <p class="screenshot-desc">Embedded user manual available entirely offline, covering Bluetooth pairing, curtain calibration, and automatic temperature threshold rules (≥30°C ON / ≤29°C OFF).</p>
-            </div>
-          </div>
+          <div class="carousel-counter" id="screenshotsCounter">Screen 1 of 5</div>
         </div>
       </div>
     <!-- Physical Hardware Showcase Section -->
@@ -356,6 +389,15 @@
               </svg>
               <span>Side View & Cooling Fans</span>
             </button>
+            <button type="button" class="hw-tab" data-hw="blueprint" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                <line x1="7" y1="2" x2="7" y2="22"></line>
+                <line x1="17" y1="2" x2="17" y2="22"></line>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+              </svg>
+              <span>Mainboard Wiring Blueprint</span>
+            </button>
           </div>
 
           <!-- Main Interactive Hardware Display Card -->
@@ -366,7 +408,6 @@
                 alt="NexusHome Hardware Front View Enclosure with OLED Display" 
                 id="hwMainImg" 
                 class="hw-main-img"
-                loading="lazy"
               >
             </div>
 
@@ -550,8 +591,8 @@
               </div>
             </div>
             <div style="margin-top: 24px;">
-              <a href="specs.html#protocol" class="btn btn-secondary btn-md">
-                <span>View Full System Specs, Commands & Pinouts</span>
+              <a href="specs.html#firmware" class="btn btn-secondary btn-md">
+                <span>View Firmware Code, Commands & Pinouts</span>
                 <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16">
                   <path fill="currentColor" d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
