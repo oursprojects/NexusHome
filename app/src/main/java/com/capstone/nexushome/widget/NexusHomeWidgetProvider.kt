@@ -26,6 +26,8 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
     companion object {
         const val ACTION_TOGGLE_LIGHT = "com.capstone.nexushome.widget.ACTION_TOGGLE_LIGHT"
         const val ACTION_TOGGLE_FAN = "com.capstone.nexushome.widget.ACTION_TOGGLE_FAN"
+        const val ACTION_TOGGLE_CURTAIN = "com.capstone.nexushome.widget.ACTION_TOGGLE_CURTAIN"
+        const val ACTION_TOGGLE_MODE = "com.capstone.nexushome.widget.ACTION_TOGGLE_MODE"
 
         fun updateAllWidgets(context: Context) {
             val appWidgetManager = AppWidgetManager.getInstance(context) ?: return
@@ -43,7 +45,7 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
             val isConnected = bluetoothService.connectionState.value is ConnectionState.Connected
             val status = bluetoothService.deviceStatus.value
 
-            // 1. PendingIntents to launch MainActivity from header and temp panel
+            // 1. Launch MainActivity from Header or Temp panel
             val openAppIntent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
@@ -53,33 +55,43 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                 openAppIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.llWidgetHeader, openAppPendingIntent)
+            views.setOnClickPendingIntent(R.id.rlWidgetHeader, openAppPendingIntent)
             views.setOnClickPendingIntent(R.id.llWidgetTemp, openAppPendingIntent)
 
-            // 2. PendingIntents for interactive Fan & Light toggles
-            val toggleFanIntent = Intent(context, NexusHomeWidgetProvider::class.java).apply {
-                action = ACTION_TOGGLE_FAN
-            }
-            val toggleFanPendingIntent = PendingIntent.getBroadcast(
-                context,
-                101,
-                toggleFanIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.btnWidgetFan, toggleFanPendingIntent)
-
-            val toggleLightIntent = Intent(context, NexusHomeWidgetProvider::class.java).apply {
-                action = ACTION_TOGGLE_LIGHT
-            }
+            // 2. PendingIntents for 4 interactive controls
             val toggleLightPendingIntent = PendingIntent.getBroadcast(
                 context,
-                102,
-                toggleLightIntent,
+                101,
+                Intent(context, NexusHomeWidgetProvider::class.java).apply { action = ACTION_TOGGLE_LIGHT },
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.btnWidgetLight, toggleLightPendingIntent)
 
-            // 3. Render Connection Status Badge
+            val toggleFanPendingIntent = PendingIntent.getBroadcast(
+                context,
+                102,
+                Intent(context, NexusHomeWidgetProvider::class.java).apply { action = ACTION_TOGGLE_FAN },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.btnWidgetFan, toggleFanPendingIntent)
+
+            val toggleCurtainPendingIntent = PendingIntent.getBroadcast(
+                context,
+                103,
+                Intent(context, NexusHomeWidgetProvider::class.java).apply { action = ACTION_TOGGLE_CURTAIN },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.btnWidgetCurtain, toggleCurtainPendingIntent)
+
+            val toggleModePendingIntent = PendingIntent.getBroadcast(
+                context,
+                104,
+                Intent(context, NexusHomeWidgetProvider::class.java).apply { action = ACTION_TOGGLE_MODE },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.btnWidgetMode, toggleModePendingIntent)
+
+            // 3. Render Status Badge
             if (isConnected) {
                 views.setTextViewText(R.id.tvWidgetStatus, context.getString(R.string.widget_status_connected))
                 views.setTextColor(R.id.tvWidgetStatus, ContextCompat.getColor(context, R.color.status_connected_text))
@@ -111,7 +123,16 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.tvWidgetTempHint, context.getString(R.string.connection_hint_disconnected))
             }
 
-            // 5. Render Fan Button
+            // 5. Render Light Button
+            if (isConnected && status.lightOn) {
+                views.setInt(R.id.btnWidgetLight, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                views.setTextViewText(R.id.tvWidgetLightState, context.getString(R.string.light_state_on))
+            } else {
+                views.setInt(R.id.btnWidgetLight, "setBackgroundResource", R.drawable.bg_widget_control_off)
+                views.setTextViewText(R.id.tvWidgetLightState, context.getString(R.string.light_state_off))
+            }
+
+            // 6. Render Fan Button
             if (isConnected && status.fanOn) {
                 views.setInt(R.id.btnWidgetFan, "setBackgroundResource", R.drawable.bg_widget_control_on)
                 views.setTextViewText(R.id.tvWidgetFanState, context.getString(R.string.fan_state_on))
@@ -120,13 +141,22 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.tvWidgetFanState, context.getString(R.string.fan_state_off))
             }
 
-            // 6. Render Light Button
-            if (isConnected && status.lightOn) {
-                views.setInt(R.id.btnWidgetLight, "setBackgroundResource", R.drawable.bg_widget_control_on)
-                views.setTextViewText(R.id.tvWidgetLightState, context.getString(R.string.light_state_on))
+            // 7. Render Curtain Button
+            if (isConnected && status.curtainOpen) {
+                views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_open))
             } else {
-                views.setInt(R.id.btnWidgetLight, "setBackgroundResource", R.drawable.bg_widget_control_off)
-                views.setTextViewText(R.id.tvWidgetLightState, context.getString(R.string.light_state_off))
+                views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_off)
+                views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_closed))
+            }
+
+            // 8. Render Mode Button
+            if (isConnected && status.autoMode) {
+                views.setInt(R.id.btnWidgetMode, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                views.setTextViewText(R.id.tvWidgetModeState, context.getString(R.string.mode_auto))
+            } else {
+                views.setInt(R.id.btnWidgetMode, "setBackgroundResource", R.drawable.bg_widget_control_off)
+                views.setTextViewText(R.id.tvWidgetModeState, context.getString(R.string.mode_manual))
             }
 
             return views
@@ -174,6 +204,48 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                     val currentFan = bluetoothService.deviceStatus.value.fanOn
                     val targetCommand = if (currentFan) "b" else "B"
                     val targetAction = if (currentFan) "Fan OFF" else "Fan ON"
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val result = bluetoothService.sendCode(targetCommand)
+                        if (result.isSuccess) {
+                            runCatching {
+                                val ts = SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()).format(Date())
+                                val db = AppDatabase.getInstance(context.applicationContext)
+                                db.commandLogDao().insert(CommandLog(timestamp = ts, action = targetAction))
+                            }
+                        }
+                        updateAllWidgets(context)
+                    }
+                }
+            }
+            ACTION_TOGGLE_CURTAIN -> {
+                if (!isConnected) {
+                    launchMainActivity(context)
+                } else {
+                    val currentCurtain = bluetoothService.deviceStatus.value.curtainOpen
+                    val targetCommand = if (currentCurtain) "d" else "D"
+                    val targetAction = if (currentCurtain) "Curtain Close" else "Curtain Open"
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val result = bluetoothService.sendCode(targetCommand)
+                        if (result.isSuccess) {
+                            runCatching {
+                                val ts = SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()).format(Date())
+                                val db = AppDatabase.getInstance(context.applicationContext)
+                                db.commandLogDao().insert(CommandLog(timestamp = ts, action = targetAction))
+                            }
+                        }
+                        updateAllWidgets(context)
+                    }
+                }
+            }
+            ACTION_TOGGLE_MODE -> {
+                if (!isConnected) {
+                    launchMainActivity(context)
+                } else {
+                    val currentAuto = bluetoothService.deviceStatus.value.autoMode
+                    val targetCommand = if (currentAuto) "c" else "C"
+                    val targetAction = if (currentAuto) "Manual Mode" else "Auto Mode"
 
                     CoroutineScope(Dispatchers.IO).launch {
                         val result = bluetoothService.sendCode(targetCommand)

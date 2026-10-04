@@ -54,6 +54,28 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".service.NexusCurtainTileService"
+            android:icon="@drawable/ic_tile_curtain"
+            android:label="@string/tile_curtain_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".service.NexusModeTileService"
+            android:icon="@drawable/ic_tile_mode"
+            android:label="@string/tile_mode_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".widget.NexusHomeWidgetProvider"
             android:label="@string/widget_name"
@@ -62,6 +84,8 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.capstone.nexushome.widget.ACTION_TOGGLE_LIGHT" />
                 <action android:name="com.capstone.nexushome.widget.ACTION_TOGGLE_FAN" />
+                <action android:name="com.capstone.nexushome.widget.ACTION_TOGGLE_CURTAIN" />
+                <action android:name="com.capstone.nexushome.widget.ACTION_TOGGLE_MODE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

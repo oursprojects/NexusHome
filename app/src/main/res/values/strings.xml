@@ -149,8 +149,16 @@
     <!-- Quick Settings Tiles Strings -->
     <string name="tile_light_label">Nexus Light</string>
     <string name="tile_fan_label">Nexus Fan</string>
+    <string name="tile_curtain_label">Nexus Curtain</string>
+    <string name="tile_mode_label">Nexus Mode</string>
     <string name="tile_state_on">On</string>
     <string name="tile_state_off">Off</string>
+    <string name="tile_curtain_open">Open</string>
+    <string name="tile_curtain_closed">Closed</string>
+    <string name="tile_curtain_opening">Opening…</string>
+    <string name="tile_curtain_closing">Closing…</string>
+    <string name="tile_mode_auto">Auto</string>
+    <string name="tile_mode_manual">Manual</string>
     <string name="tile_state_disconnected">Disconnected</string>
 
     <!-- Home Screen Widget Strings -->
