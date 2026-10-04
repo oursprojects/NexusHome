@@ -15,6 +15,8 @@ import java.io.OutputStream
 import java.util.UUID
 import com.capstone.nexushome.R
 import android.util.Log
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 sealed class ConnectionState {
     object Disconnected : ConnectionState()
@@ -53,6 +55,7 @@ class BluetoothService private constructor(private val context: Context) {
     private var reconnectJob: Job? = null
     private var reconnectAttemptCount = 0
     private val prefs = context.getSharedPreferences("nexus_bt_prefs", Context.MODE_PRIVATE)
+    private val sendMutex = Mutex()
 
     companion object {
         private const val DEVICE_NAME = "NexusHome"
@@ -204,17 +207,19 @@ class BluetoothService private constructor(private val context: Context) {
         }
 
         return withContext(Dispatchers.IO) {
-            try {
-                val out = outputStream ?: throw IOException("Output stream unavailable")
-                out.write(code.toByteArray(Charsets.UTF_8))
-                out.flush()
-                Result.success(Unit)
-            } catch (e: IOException) {
-                Log.e(TAG, "Failed to send command: $code", e)
-                cleanup()
-                _connectionState.value = ConnectionState.Failed("Connection lost while sending command")
-                if (autoReconnectEnabled) startAutoReconnect()
-                Result.failure(IOException(context.getString(R.string.connection_failed), e))
+            sendMutex.withLock {
+                try {
+                    val out = outputStream ?: throw IOException("Output stream unavailable")
+                    out.write(code.toByteArray(Charsets.UTF_8))
+                    out.flush()
+                    Result.success(Unit)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Failed to send command: $code", e)
+                    cleanup()
+                    _connectionState.value = ConnectionState.Failed("Connection lost while sending command")
+                    if (autoReconnectEnabled) startAutoReconnect()
+                    Result.failure(IOException(context.getString(R.string.connection_failed), e))
+                }
             }
         }
     }

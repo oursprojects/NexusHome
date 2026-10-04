@@ -138,4 +138,24 @@
     <string name="btn_close">Close</string>
 
     <string name="footer_credit">Developed by Team Nexus</string>
+
+    <!-- Foreground Service Strings -->
+    <string name="notification_channel_name">NexusHome Connection</string>
+    <string name="notification_channel_desc">Shows ongoing background status and quick controls for NexusHome.</string>
+    <string name="notification_connected_title">NexusHome Active</string>
+    <string name="notification_connected_format">Room Temp: %1$s • Fan: %2$s • Light: %3$s</string>
+    <string name="notification_action_disconnect">Disconnect</string>
+
+    <!-- Quick Settings Tiles Strings -->
+    <string name="tile_light_label">Nexus Light</string>
+    <string name="tile_fan_label">Nexus Fan</string>
+    <string name="tile_state_on">On</string>
+    <string name="tile_state_off">Off</string>
+    <string name="tile_state_disconnected">Disconnected</string>
+
+    <!-- Home Screen Widget Strings -->
+    <string name="widget_name">NexusHome Controller</string>
+    <string name="widget_desc">Real-time room temperature and instant fan &amp; light controls.</string>
+    <string name="widget_status_connected">Connected</string>
+    <string name="widget_status_disconnected">Offline</string>
 </resources>

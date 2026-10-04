@@ -295,9 +295,9 @@ function initGitHubRelease() {
   const sizeTags = document.querySelectorAll('.release-size-tag');
 
   // Fallback defaults
-  const fallbackVersion = 'v1.0.4';
+  const fallbackVersion = 'v1.0.5';
   const fallbackUrl = `https://github.com/${repo}/releases/latest/download/app-release.apk`;
-  const fallbackSize = '5.45 MB';
+  const fallbackSize = '5.47 MB';
 
   // Apply cached release metadata if available (zero flash, instant display)
   try {

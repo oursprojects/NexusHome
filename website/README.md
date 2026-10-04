@@ -30,5 +30,5 @@ Follow the terminal prompts to deploy.
 - **Live Interactive Phone Mockup**: Visitors can click to toggle lights, spin the fan, trigger the calibrated 25s motorized curtain progress bar, and test auto-mode temperature switching.
 - **Hardware Architecture & Wiring Switcher**: Seamlessly inspect Exterior Front, Internal Hub, Side Profile, and ESP32 Terminal Schematic with instant image caching.
 - **Embedded Firmware Code Viewer & VC-02 Flashing Guide**: Full syntax-highlighted C++ source code viewer and official offline voice module toolchain specs.
-- **Dynamic APK Download Button**: Automatically pulls the latest release tag (`v1.0.4`) and links directly to the production signed APK on GitHub.
+- **Dynamic APK Download Button**: Automatically pulls the latest release tag (`v1.0.5`) and links directly to the production signed APK on GitHub.
 - **Pure Vanilla Stack**: Built with semantic HTML5, modern vanilla CSS (glassmorphism & cyber-clean dark mode), and lightweight JavaScript. Zero external frameworks, ensuring ultra-fast load times.

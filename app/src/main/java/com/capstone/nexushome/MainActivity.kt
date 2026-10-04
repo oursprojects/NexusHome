@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.TouchDelegate
@@ -36,8 +37,11 @@ import com.capstone.nexushome.bluetooth.DeviceStatus
 import com.capstone.nexushome.data.AppDatabase
 import com.capstone.nexushome.data.CommandLog
 import com.capstone.nexushome.databinding.ActivityMainBinding
+import com.capstone.nexushome.service.NexusForegroundService
+import com.capstone.nexushome.widget.NexusHomeWidgetProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -56,11 +60,13 @@ class MainActivity : AppCompatActivity() {
     private var pendingConnectRequest = false
     private var lastToastMessage: String? = null
     private val uiPrefs by lazy { getSharedPreferences("nexus_ui_prefs", MODE_PRIVATE) }
-    private val commandTimeFormatter by lazy { SimpleDateFormat("hh:mm:ss a", Locale.getDefault()) }
+    private val commandTimeFormatter by lazy { SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()) }
     private val statusTimeFormatter by lazy { SimpleDateFormat("h:mm a", Locale.getDefault()) }
 
     private enum class LocalCurtainState { IDLE, OPENING, CLOSING }
     private var localCurtainState = LocalCurtainState.IDLE
+    private var curtainLockUntilMs = 0L
+    private var curtainTimerJob: Job? = null
 
     private var fanLock = false
     private var lightLock = false
@@ -169,11 +175,37 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Prime dashboard content offstage for seamless reveal
-        binding.dashboardContent.alpha = 0f
-        binding.dashboardContent.translationY = 24f
-        binding.ivLogo.scaleX = 0.85f
-        binding.ivLogo.scaleY = 0.85f
+        // Prime choreographed elements offstage for staggered entrance
+        binding.dashboardContent.alpha = 1f
+        binding.ivLogo.alpha = 0f
+        binding.ivLogo.scaleX = 0.82f
+        binding.ivLogo.scaleY = 0.82f
+
+        binding.tvBrandNexus.alpha = 0f
+        binding.tvBrandNexus.translationY = 18f
+        binding.tvBrandHome.alpha = 0f
+        binding.tvBrandHome.translationY = 18f
+
+        binding.tvBrandTagline.alpha = 0f
+        binding.tvBrandTagline.translationY = 12f
+
+        binding.headerActions.alpha = 0f
+        binding.headerActions.translationY = 10f
+
+        binding.statusContainer.alpha = 0f
+        binding.statusContainer.translationY = 22f
+
+        binding.cardTemp.alpha = 0f
+        binding.cardTemp.translationY = 26f
+
+        binding.tvControlsHeader.alpha = 0f
+        binding.tvControlsHeader.translationY = 14f
+
+        binding.controlFlow.alpha = 0f
+        binding.controlFlow.translationY = 30f
+
+        binding.footerContainer.alpha = 0f
+        binding.footerContainer.translationY = 10f
 
         // Keep splash screen visible for a comfortable duration
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
@@ -181,9 +213,15 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(1000L)
             keepSplashOnScreen = false
+            // Safety fallback for devices/OEMs where system splash exit listener is bypassed
+            delay(500L)
+            if (!entranceAnimationPlayed) {
+                entranceAnimationPlayed = true
+                playEntranceAnimation()
+            }
         }
 
-        // Custom exit animation: smooth icon expansion & fade-out, followed by dashboard slide-in
+        // Custom exit animation: smooth icon expansion & fade-out, followed by choreographed dashboard cascade
         splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
             val splashView = splashScreenViewProvider.view
             val iconView = runCatching { splashScreenViewProvider.iconView }.getOrNull()
@@ -219,18 +257,102 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playEntranceAnimation() {
-        binding.dashboardContent.animate()
-            .alpha(1f)
-            .translationY(0f)
-            .setDuration(550L)
-            .setInterpolator(DecelerateInterpolator())
-            .start()
+        val decelerate = DecelerateInterpolator(1.6f)
+
+        // 1. Center Emblem Reveal
         binding.ivLogo.animate()
+            .alpha(1f)
             .scaleX(1f)
             .scaleY(1f)
-            .setDuration(550L)
-            .setStartDelay(80L)
-            .setInterpolator(DecelerateInterpolator())
+            .setDuration(480L)
+            .setInterpolator(decelerate)
+            .start()
+
+        // 2. Brand Name Motion ("Nexus" + "Home")
+        binding.tvBrandNexus.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(440L)
+            .setStartDelay(70L)
+            .setInterpolator(decelerate)
+            .start()
+
+        binding.tvBrandHome.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(440L)
+            .setStartDelay(70L)
+            .setInterpolator(decelerate)
+            .start()
+
+        // 3. "Smart Remote" Badge & Action Icons
+        binding.tvBrandTagline.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(380L)
+            .setStartDelay(130L)
+            .setInterpolator(decelerate)
+            .start()
+
+        binding.headerActions.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(380L)
+            .setStartDelay(130L)
+            .setInterpolator(decelerate)
+            .start()
+
+        // 4. Fluid Dashboard Transition (Staggered cascade: 60ms increments)
+        binding.statusContainer.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(420L)
+            .setStartDelay(190L)
+            .setInterpolator(decelerate)
+            .start()
+
+        binding.cardTemp.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(420L)
+            .setStartDelay(250L)
+            .setInterpolator(decelerate)
+            .start()
+
+        binding.tvControlsHeader.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(360L)
+            .setStartDelay(310L)
+            .setInterpolator(decelerate)
+            .start()
+
+        binding.controlFlow.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(450L)
+            .setStartDelay(370L)
+            .setInterpolator(decelerate)
+            .start()
+
+        if (binding.permissionCard.visibility == View.VISIBLE) {
+            binding.permissionCard.alpha = 0f
+            binding.permissionCard.translationY = 24f
+            binding.permissionCard.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(420L)
+                .setStartDelay(370L)
+                .setInterpolator(decelerate)
+                .start()
+        }
+
+        binding.footerContainer.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(380L)
+            .setStartDelay(430L)
+            .setInterpolator(decelerate)
             .start()
     }
 
@@ -406,30 +528,25 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 val targetState = if (isChecked) LocalCurtainState.OPENING else LocalCurtainState.CLOSING
 
                 localCurtainState = targetState
+                curtainLockUntilMs = SystemClock.elapsedRealtime() + CURTAIN_MOVE_TIME_MS
                 renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
                 
-                lifecycleScope.launch {
-                    viewModel.sendCommand(targetCommand)
-                        .onSuccess {
-                            logCommand(targetLabel)
-                            binding.mainRoot.postDelayed({
-                                if (localCurtainState == targetState) {
-                                    localCurtainState = LocalCurtainState.IDLE
-                                    if (viewModel.connectionState.value is ConnectionState.Connected) {
-                                        binding.switchCurtain.isEnabled = true
-                                    }
-                                    renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
-                                }
-                            }, CURTAIN_MOVE_TIME_MS)
-                        }
-                        .onFailure { throwable ->
-                            localCurtainState = LocalCurtainState.IDLE
-                            showUserMessage(
-                                throwable.message ?: getString(R.string.connection_failed),
-                                Toast.LENGTH_LONG
-                            )
-                            renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = false)
-                        }
+                curtainTimerJob?.cancel()
+                curtainTimerJob = lifecycleScope.launch {
+                    val result = viewModel.sendCommand(targetCommand)
+                    if (result.isSuccess) {
+                        logCommand(targetLabel)
+                        delay(CURTAIN_MOVE_TIME_MS)
+                        localCurtainState = LocalCurtainState.IDLE
+                        curtainLockUntilMs = 0L
+                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                    } else {
+                        localCurtainState = LocalCurtainState.IDLE
+                        curtainLockUntilMs = 0L
+                        val errorMsg = result.exceptionOrNull()?.message ?: getString(R.string.connection_failed)
+                        showUserMessage(errorMsg, Toast.LENGTH_LONG)
+                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = false)
+                    }
                 }
             }
         }
@@ -627,6 +744,14 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             updateLightIcon(showLightOn)
             updateLightState(showLightOn)
 
+            val now = SystemClock.elapsedRealtime()
+            if (localCurtainState != LocalCurtainState.IDLE && curtainLockUntilMs > 0L && now >= curtainLockUntilMs) {
+                localCurtainState = LocalCurtainState.IDLE
+                curtainLockUntilMs = 0L
+            }
+
+            val isCurtainInMotion = localCurtainState != LocalCurtainState.IDLE && (curtainLockUntilMs == 0L || now < curtainLockUntilMs)
+
             val isCurtainOpen = when (localCurtainState) {
                 LocalCurtainState.OPENING -> true
                 LocalCurtainState.CLOSING -> false
@@ -634,21 +759,22 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             }
             binding.switchCurtain.isChecked = isCurtainOpen
             updateCurtainIcon(isCurtainOpen)
-            when (localCurtainState) {
-                LocalCurtainState.OPENING -> {
-                    binding.switchCurtain.isEnabled = false
-                    binding.tvCurtainState.text = getString(R.string.curtain_state_opening)
-                }
-                LocalCurtainState.CLOSING -> {
-                    binding.switchCurtain.isEnabled = false
-                    binding.tvCurtainState.text = getString(R.string.curtain_state_closing)
-                }
-                LocalCurtainState.IDLE -> {
-                    if (viewModel.connectionState.value is ConnectionState.Connected) {
-                        binding.switchCurtain.isEnabled = true
+
+            val isConnected = viewModel.connectionState.value is ConnectionState.Connected
+            if (isCurtainInMotion) {
+                binding.switchCurtain.isEnabled = false
+                binding.switchCurtain.alpha = 0.6f
+                binding.tvCurtainState.text = getString(
+                    if (localCurtainState == LocalCurtainState.OPENING) {
+                        R.string.curtain_state_opening
+                    } else {
+                        R.string.curtain_state_closing
                     }
-                    updateCurtainState(isCurtainOpen)
-                }
+                )
+            } else {
+                binding.switchCurtain.isEnabled = isConnected
+                binding.switchCurtain.alpha = if (isConnected) 1.0f else 0.5f
+                updateCurtainState(isCurtainOpen)
             }
 
             val showAutoMode = if (modeLock) binding.switchMode.isChecked else status.autoMode
@@ -657,6 +783,7 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         } finally {
             isUpdatingUI = wasUpdating
         }
+        NexusHomeWidgetProvider.updateAllWidgets(this)
     }
 
     private fun updateLastUpdated(date: Date?) {
@@ -773,6 +900,16 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
     }
 
     private fun setDisconnectedState() {
+        curtainTimerJob?.cancel()
+        curtainTimerJob = null
+        curtainLockUntilMs = 0L
+        localCurtainState = LocalCurtainState.IDLE
+        fanLock = false
+        lightLock = false
+        modeLock = false
+
+        NexusForegroundService.stopService(this)
+
         binding.btnConnect.visibility = View.VISIBLE
         binding.btnConnect.text = getString(R.string.btn_connect)
         binding.btnConnect.setIconResource(R.drawable.ic_lucide_bluetooth_off)
@@ -796,17 +933,20 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         binding.btnDisconnect.visibility = View.VISIBLE
         binding.permissionCard.visibility = View.GONE
         setControlsEnabled(true)
+        NexusForegroundService.startService(this)
     }
 
     private fun setControlsEnabled(enabled: Boolean) {
+        val now = SystemClock.elapsedRealtime()
+        val isCurtainInMotion = localCurtainState != LocalCurtainState.IDLE && (curtainLockUntilMs == 0L || now < curtainLockUntilMs)
         val alpha = if (enabled) 1f else 0.5f
         binding.switchLight.isEnabled = enabled
         binding.switchFan.isEnabled = enabled
-        binding.switchCurtain.isEnabled = enabled && localCurtainState == LocalCurtainState.IDLE
+        binding.switchCurtain.isEnabled = enabled && !isCurtainInMotion
         binding.switchMode.isEnabled = enabled
         binding.switchLight.alpha = alpha
         binding.switchFan.alpha = alpha
-        binding.switchCurtain.alpha = if (enabled && localCurtainState != LocalCurtainState.IDLE) 0.7f else alpha
+        binding.switchCurtain.alpha = if (enabled && isCurtainInMotion) 0.6f else alpha
         binding.switchMode.alpha = alpha
     }
 
@@ -874,7 +1014,9 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
     }
 
     override fun onDestroy() {
-        if (isFinishing) {
+        curtainTimerJob?.cancel()
+        curtainTimerJob = null
+        if (isFinishing && viewModel.connectionState.value !is ConnectionState.Connected) {
             viewModel.bluetoothService.shutdown()
         }
         super.onDestroy()
@@ -894,6 +1036,14 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 PackageManager.PERMISSION_GRANTED
             ) {
                 needed.add(Manifest.permission.BLUETOOTH_SCAN)
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                needed.add(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
         if (

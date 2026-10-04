@@ -28,7 +28,7 @@ class CommandLogAdapter : ListAdapter<CommandLog, CommandLogAdapter.LogViewHolde
 
     override fun onBindViewHolder(holder: LogViewHolder, position: Int) {
         val log = getItem(position)
-        holder.tvTimestamp.text = log.timestamp
+        holder.tvTimestamp.text = log.timestamp.replace(" • ", "\n")
         holder.tvAction.text = log.action
         holder.tvActionMeta.text = holder.itemView.context.getString(resolveMetaText(log))
 
