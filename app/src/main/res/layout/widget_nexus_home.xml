@@ -231,7 +231,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_tile_curtain" />
+                    android:src="@drawable/curtain_closed" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -14,6 +14,12 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.UUID
 import com.capstone.nexushome.R
+import com.capstone.nexushome.data.AppDatabase
+import com.capstone.nexushome.data.CommandLog
+import com.capstone.nexushome.widget.NexusHomeWidgetProvider
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import android.util.Log
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -25,6 +31,13 @@ sealed class ConnectionState {
     object Connected : ConnectionState()
     object BluetoothDisabled : ConnectionState()
     data class Failed(val message: String) : ConnectionState()
+}
+
+enum class CurtainMotionState {
+    IDLE_CLOSED,
+    IDLE_OPEN,
+    OPENING,
+    CLOSING
 }
 
 data class DeviceStatus(
@@ -50,6 +63,14 @@ class BluetoothService private constructor(private val context: Context) {
     private val _deviceStatus = MutableStateFlow(DeviceStatus())
     val deviceStatus = _deviceStatus.asStateFlow()
 
+    private val _curtainMotionState = MutableStateFlow<CurtainMotionState>(CurtainMotionState.IDLE_CLOSED)
+    val curtainMotionState = _curtainMotionState.asStateFlow()
+
+    private val _curtainProgress = MutableStateFlow<Float>(0f)
+    val curtainProgress = _curtainProgress.asStateFlow()
+
+    private var curtainTransitJob: Job? = null
+
     private var autoReconnectEnabled = true
     private var lastDeviceAddress: String? = null
     private var reconnectJob: Job? = null
@@ -58,6 +79,7 @@ class BluetoothService private constructor(private val context: Context) {
     private val sendMutex = Mutex()
 
     companion object {
+        const val CURTAIN_MOVE_TIME_MS = 25000L
         private const val DEVICE_NAME = "NexusHome"
         private val SPP_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         private const val MAX_RECONNECT_ATTEMPTS = 5
@@ -73,6 +95,56 @@ class BluetoothService private constructor(private val context: Context) {
                 INSTANCE ?: BluetoothService(context.applicationContext).also { INSTANCE = it }
             }
         }
+    }
+
+    fun triggerCurtain(context: Context, open: Boolean, onCompletion: ((Boolean) -> Unit)? = null): Boolean {
+        if (!isDeviceConnected()) return false
+        val currentMotion = _curtainMotionState.value
+        if (currentMotion == CurtainMotionState.OPENING || currentMotion == CurtainMotionState.CLOSING) {
+            Log.d(TAG, "Curtain is currently in motion ($currentMotion). Request ignored.")
+            return false
+        }
+
+        val targetState = if (open) CurtainMotionState.OPENING else CurtainMotionState.CLOSING
+        _curtainMotionState.value = targetState
+        _curtainProgress.value = 0f
+        NexusHomeWidgetProvider.updateAllWidgets(context)
+
+        curtainTransitJob?.cancel()
+        curtainTransitJob = serviceScope.launch {
+            val cmd = if (open) "D" else "d"
+            val actionLabel = if (open) "Curtain Open" else "Curtain Close"
+            val result = sendCode(cmd)
+            if (result.isSuccess) {
+                runCatching {
+                    val ts = SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()).format(Date())
+                    val db = AppDatabase.getInstance(context.applicationContext)
+                    db.commandLogDao().insert(CommandLog(timestamp = ts, action = actionLabel))
+                }
+
+                val totalSteps = 40
+                val stepDelayMs = 625L // 40 * 625ms = 25000ms
+                for (step in 1..totalSteps) {
+                    delay(stepDelayMs)
+                    if (!isActive) break
+                    _curtainProgress.value = step.toFloat() / totalSteps.toFloat()
+                    NexusHomeWidgetProvider.updateAllWidgets(context)
+                }
+
+                _curtainMotionState.value = if (open) CurtainMotionState.IDLE_OPEN else CurtainMotionState.IDLE_CLOSED
+                _curtainProgress.value = 1f
+                _deviceStatus.value = _deviceStatus.value.copy(curtainOpen = open)
+                NexusHomeWidgetProvider.updateAllWidgets(context)
+                onCompletion?.invoke(true)
+            } else {
+                Log.e(TAG, "Curtain command failed: ${result.exceptionOrNull()?.message}")
+                _curtainMotionState.value = if (_deviceStatus.value.curtainOpen) CurtainMotionState.IDLE_OPEN else CurtainMotionState.IDLE_CLOSED
+                _curtainProgress.value = 0f
+                NexusHomeWidgetProvider.updateAllWidgets(context)
+                onCompletion?.invoke(false)
+            }
+        }
+        return true
     }
 
     private val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -351,6 +423,10 @@ class BluetoothService private constructor(private val context: Context) {
             // Optional 6th field for curtain state (backward-compatible)
             val curtainOpen = if (parts.size >= 6) toBinaryFlagOrNull(parts[5]) ?: false else false
 
+            if (_curtainMotionState.value == CurtainMotionState.IDLE_CLOSED || _curtainMotionState.value == CurtainMotionState.IDLE_OPEN) {
+                _curtainMotionState.value = if (curtainOpen) CurtainMotionState.IDLE_OPEN else CurtainMotionState.IDLE_CLOSED
+            }
+
             _deviceStatus.value = DeviceStatus(
                 temperature = temperature,
                 lightOn = lightOn,
@@ -376,6 +452,10 @@ class BluetoothService private constructor(private val context: Context) {
     }
 
     private fun cleanup() {
+        curtainTransitJob?.cancel()
+        curtainTransitJob = null
+        _curtainMotionState.value = CurtainMotionState.IDLE_CLOSED
+        _curtainProgress.value = 0f
         resetStatus()
         try { inputStream?.close() } catch (_: IOException) {}
         try { outputStream?.close() } catch (_: IOException) {}

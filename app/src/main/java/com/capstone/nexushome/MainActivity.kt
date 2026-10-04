@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.capstone.nexushome.bluetooth.ConnectionState
+import com.capstone.nexushome.bluetooth.CurtainMotionState
 import com.capstone.nexushome.bluetooth.DeviceStatus
 import com.capstone.nexushome.data.AppDatabase
 import com.capstone.nexushome.data.CommandLog
@@ -62,11 +63,6 @@ class MainActivity : AppCompatActivity() {
     private val uiPrefs by lazy { getSharedPreferences("nexus_ui_prefs", MODE_PRIVATE) }
     private val commandTimeFormatter by lazy { SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()) }
     private val statusTimeFormatter by lazy { SimpleDateFormat("h:mm a", Locale.getDefault()) }
-
-    private enum class LocalCurtainState { IDLE, OPENING, CLOSING }
-    private var localCurtainState = LocalCurtainState.IDLE
-    private var curtainLockUntilMs = 0L
-    private var curtainTimerJob: Job? = null
 
     private var fanLock = false
     private var lightLock = false
@@ -370,6 +366,16 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     viewModel.deviceStatus.collectLatest(::handleDeviceStatus)
                 }
+                launch {
+                    viewModel.curtainMotionState.collectLatest {
+                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                    }
+                }
+                launch {
+                    viewModel.curtainProgress.collectLatest {
+                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
+                    }
+                }
             }
         }
     }
@@ -523,31 +529,12 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             if (isUpdatingUI) return@setOnCheckedChangeListener
             withConnectionGuard {
                 toggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                val targetCommand = if (isChecked) "D" else "d"
-                val targetLabel = if (isChecked) "Curtain Open" else "Curtain Close"
-                val targetState = if (isChecked) LocalCurtainState.OPENING else LocalCurtainState.CLOSING
-
-                localCurtainState = targetState
-                curtainLockUntilMs = SystemClock.elapsedRealtime() + CURTAIN_MOVE_TIME_MS
-                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
-                
-                curtainTimerJob?.cancel()
-                curtainTimerJob = lifecycleScope.launch {
-                    val result = viewModel.sendCommand(targetCommand)
-                    if (result.isSuccess) {
-                        logCommand(targetLabel)
-                        delay(CURTAIN_MOVE_TIME_MS)
-                        localCurtainState = LocalCurtainState.IDLE
-                        curtainLockUntilMs = 0L
-                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
-                    } else {
-                        localCurtainState = LocalCurtainState.IDLE
-                        curtainLockUntilMs = 0L
-                        val errorMsg = result.exceptionOrNull()?.message ?: getString(R.string.connection_failed)
-                        showUserMessage(errorMsg, Toast.LENGTH_LONG)
-                        renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = false)
-                    }
+                val currentMotion = viewModel.curtainMotionState.value
+                if (currentMotion == CurtainMotionState.OPENING || currentMotion == CurtainMotionState.CLOSING) {
+                    return@withConnectionGuard
                 }
+                viewModel.triggerCurtain(isChecked)
+                renderDeviceStatus(viewModel.deviceStatus.value, markFreshUpdate = true)
             }
         }
 
@@ -744,37 +731,43 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             updateLightIcon(showLightOn)
             updateLightState(showLightOn)
 
-            val now = SystemClock.elapsedRealtime()
-            if (localCurtainState != LocalCurtainState.IDLE && curtainLockUntilMs > 0L && now >= curtainLockUntilMs) {
-                localCurtainState = LocalCurtainState.IDLE
-                curtainLockUntilMs = 0L
-            }
-
-            val isCurtainInMotion = localCurtainState != LocalCurtainState.IDLE && (curtainLockUntilMs == 0L || now < curtainLockUntilMs)
-
-            val isCurtainOpen = when (localCurtainState) {
-                LocalCurtainState.OPENING -> true
-                LocalCurtainState.CLOSING -> false
-                LocalCurtainState.IDLE -> status.curtainOpen
-            }
-            binding.switchCurtain.isChecked = isCurtainOpen
-            updateCurtainIcon(isCurtainOpen)
-
+            val motion = viewModel.curtainMotionState.value
+            val progress = viewModel.curtainProgress.value
             val isConnected = viewModel.connectionState.value is ConnectionState.Connected
-            if (isCurtainInMotion) {
-                binding.switchCurtain.isEnabled = false
-                binding.switchCurtain.alpha = 0.6f
-                binding.tvCurtainState.text = getString(
-                    if (localCurtainState == LocalCurtainState.OPENING) {
-                        R.string.curtain_state_opening
-                    } else {
-                        R.string.curtain_state_closing
-                    }
-                )
-            } else {
-                binding.switchCurtain.isEnabled = isConnected
-                binding.switchCurtain.alpha = if (isConnected) 1.0f else 0.5f
-                updateCurtainState(isCurtainOpen)
+
+            when (motion) {
+                CurtainMotionState.OPENING -> {
+                    binding.switchCurtain.isEnabled = false
+                    binding.switchCurtain.alpha = 0.6f
+                    binding.switchCurtain.isChecked = true
+                    val dotCount = ((progress * 40).toInt() % 3) + 1
+                    binding.tvCurtainState.text = "Opening" + ".".repeat(dotCount)
+                    binding.ivCurtainIcon.setImageResource(NexusHomeWidgetProvider.getCurtainWidgetFrame(progress, isOpening = true))
+                    binding.ivCurtainIcon.imageTintList = null
+                }
+                CurtainMotionState.CLOSING -> {
+                    binding.switchCurtain.isEnabled = false
+                    binding.switchCurtain.alpha = 0.6f
+                    binding.switchCurtain.isChecked = false
+                    val dotCount = ((progress * 40).toInt() % 3) + 1
+                    binding.tvCurtainState.text = "Closing" + ".".repeat(dotCount)
+                    binding.ivCurtainIcon.setImageResource(NexusHomeWidgetProvider.getCurtainWidgetFrame(progress, isOpening = false))
+                    binding.ivCurtainIcon.imageTintList = null
+                }
+                CurtainMotionState.IDLE_OPEN -> {
+                    binding.switchCurtain.isEnabled = isConnected
+                    binding.switchCurtain.alpha = if (isConnected) 1.0f else 0.5f
+                    binding.switchCurtain.isChecked = true
+                    updateCurtainState(true)
+                    updateCurtainIcon(true)
+                }
+                CurtainMotionState.IDLE_CLOSED -> {
+                    binding.switchCurtain.isEnabled = isConnected
+                    binding.switchCurtain.alpha = if (isConnected) 1.0f else 0.5f
+                    binding.switchCurtain.isChecked = false
+                    updateCurtainState(false)
+                    updateCurtainIcon(false)
+                }
             }
 
             val showAutoMode = if (modeLock) binding.switchMode.isChecked else status.autoMode
@@ -900,10 +893,6 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
     }
 
     private fun setDisconnectedState() {
-        curtainTimerJob?.cancel()
-        curtainTimerJob = null
-        curtainLockUntilMs = 0L
-        localCurtainState = LocalCurtainState.IDLE
         fanLock = false
         lightLock = false
         modeLock = false
@@ -937,8 +926,8 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
     }
 
     private fun setControlsEnabled(enabled: Boolean) {
-        val now = SystemClock.elapsedRealtime()
-        val isCurtainInMotion = localCurtainState != LocalCurtainState.IDLE && (curtainLockUntilMs == 0L || now < curtainLockUntilMs)
+        val motion = viewModel.curtainMotionState.value
+        val isCurtainInMotion = motion == CurtainMotionState.OPENING || motion == CurtainMotionState.CLOSING
         val alpha = if (enabled) 1f else 0.5f
         binding.switchLight.isEnabled = enabled
         binding.switchFan.isEnabled = enabled
@@ -1014,8 +1003,6 @@ Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
     }
 
     override fun onDestroy() {
-        curtainTimerJob?.cancel()
-        curtainTimerJob = null
         if (isFinishing && viewModel.connectionState.value !is ConnectionState.Connected) {
             viewModel.bluetoothService.shutdown()
         }

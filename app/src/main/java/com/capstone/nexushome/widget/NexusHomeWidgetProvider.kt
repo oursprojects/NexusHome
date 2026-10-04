@@ -12,6 +12,7 @@ import com.capstone.nexushome.MainActivity
 import com.capstone.nexushome.R
 import com.capstone.nexushome.bluetooth.BluetoothService
 import com.capstone.nexushome.bluetooth.ConnectionState
+import com.capstone.nexushome.bluetooth.CurtainMotionState
 import com.capstone.nexushome.data.AppDatabase
 import com.capstone.nexushome.data.CommandLog
 import kotlinx.coroutines.CoroutineScope
@@ -39,11 +40,24 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
             }
         }
 
+        fun getCurtainWidgetFrame(progress: Float, isOpening: Boolean): Int {
+            val p = if (isOpening) progress.coerceIn(0f, 1f) else (1f - progress.coerceIn(0f, 1f))
+            return when {
+                p < 0.18f -> R.drawable.curtain_closed
+                p < 0.42f -> R.drawable.curtain_transit_1
+                p < 0.65f -> R.drawable.curtain_transit_2
+                p < 0.88f -> R.drawable.curtain_transit_3
+                else -> R.drawable.curtain_open
+            }
+        }
+
         fun buildRemoteViews(context: Context): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_nexus_home)
             val bluetoothService = BluetoothService.getInstance(context.applicationContext)
             val isConnected = bluetoothService.connectionState.value is ConnectionState.Connected
             val status = bluetoothService.deviceStatus.value
+            val curtainMotion = bluetoothService.curtainMotionState.value
+            val curtainProgress = bluetoothService.curtainProgress.value
 
             // 1. Launch MainActivity from Header or Temp panel
             val openAppIntent = Intent(context, MainActivity::class.java).apply {
@@ -141,13 +155,36 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.tvWidgetFanState, context.getString(R.string.fan_state_off))
             }
 
-            // 7. Render Curtain Button
-            if (isConnected && status.curtainOpen) {
-                views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_on)
-                views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_open))
-            } else {
+            // 7. Render Curtain Button with Live Animation
+            if (!isConnected) {
                 views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_off)
                 views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_closed))
+                views.setImageViewResource(R.id.ivWidgetCurtain, R.drawable.curtain_closed)
+            } else {
+                when (curtainMotion) {
+                    CurtainMotionState.OPENING -> {
+                        views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                        val dotCount = ((curtainProgress * 40).toInt() % 3) + 1
+                        views.setTextViewText(R.id.tvWidgetCurtainState, "Opening" + ".".repeat(dotCount))
+                        views.setImageViewResource(R.id.ivWidgetCurtain, getCurtainWidgetFrame(curtainProgress, isOpening = true))
+                    }
+                    CurtainMotionState.CLOSING -> {
+                        views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                        val dotCount = ((curtainProgress * 40).toInt() % 3) + 1
+                        views.setTextViewText(R.id.tvWidgetCurtainState, "Closing" + ".".repeat(dotCount))
+                        views.setImageViewResource(R.id.ivWidgetCurtain, getCurtainWidgetFrame(curtainProgress, isOpening = false))
+                    }
+                    CurtainMotionState.IDLE_OPEN -> {
+                        views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_on)
+                        views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_open))
+                        views.setImageViewResource(R.id.ivWidgetCurtain, R.drawable.curtain_open)
+                    }
+                    CurtainMotionState.IDLE_CLOSED -> {
+                        views.setInt(R.id.btnWidgetCurtain, "setBackgroundResource", R.drawable.bg_widget_control_off)
+                        views.setTextViewText(R.id.tvWidgetCurtainState, context.getString(R.string.curtain_state_closed))
+                        views.setImageViewResource(R.id.ivWidgetCurtain, R.drawable.curtain_closed)
+                    }
+                }
             }
 
             // 8. Render Mode Button
@@ -222,21 +259,12 @@ class NexusHomeWidgetProvider : AppWidgetProvider() {
                 if (!isConnected) {
                     launchMainActivity(context)
                 } else {
-                    val currentCurtain = bluetoothService.deviceStatus.value.curtainOpen
-                    val targetCommand = if (currentCurtain) "d" else "D"
-                    val targetAction = if (currentCurtain) "Curtain Close" else "Curtain Open"
-
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val result = bluetoothService.sendCode(targetCommand)
-                        if (result.isSuccess) {
-                            runCatching {
-                                val ts = SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()).format(Date())
-                                val db = AppDatabase.getInstance(context.applicationContext)
-                                db.commandLogDao().insert(CommandLog(timestamp = ts, action = targetAction))
-                            }
-                        }
-                        updateAllWidgets(context)
+                    val currentMotion = bluetoothService.curtainMotionState.value
+                    if (currentMotion == CurtainMotionState.OPENING || currentMotion == CurtainMotionState.CLOSING) {
+                        return
                     }
+                    val isOpen = (currentMotion == CurtainMotionState.IDLE_OPEN) || bluetoothService.deviceStatus.value.curtainOpen
+                    bluetoothService.triggerCurtain(context, !isOpen)
                 }
             }
             ACTION_TOGGLE_MODE -> {

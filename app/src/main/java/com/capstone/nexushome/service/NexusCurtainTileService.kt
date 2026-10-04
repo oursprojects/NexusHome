@@ -10,8 +10,7 @@ import com.capstone.nexushome.MainActivity
 import com.capstone.nexushome.R
 import com.capstone.nexushome.bluetooth.BluetoothService
 import com.capstone.nexushome.bluetooth.ConnectionState
-import com.capstone.nexushome.data.AppDatabase
-import com.capstone.nexushome.data.CommandLog
+import com.capstone.nexushome.bluetooth.CurtainMotionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,9 +18,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class NexusCurtainTileService : TileService() {
 
@@ -41,6 +37,16 @@ class NexusCurtainTileService : TileService() {
             }
             launch {
                 bluetoothService.deviceStatus.collectLatest {
+                    updateTileState()
+                }
+            }
+            launch {
+                bluetoothService.curtainMotionState.collectLatest {
+                    updateTileState()
+                }
+            }
+            launch {
+                bluetoothService.curtainProgress.collectLatest {
                     updateTileState()
                 }
             }
@@ -77,20 +83,24 @@ class NexusCurtainTileService : TileService() {
             return
         }
 
-        val currentOpen = bluetoothService.deviceStatus.value.curtainOpen
-        val targetCommand = if (currentOpen) "d" else "D"
-        val targetAction = if (currentOpen) "Curtain Close" else "Curtain Open"
+        val motion = bluetoothService.curtainMotionState.value
+        if (motion == CurtainMotionState.OPENING || motion == CurtainMotionState.CLOSING) {
+            return
+        }
 
-        serviceScope.launch {
-            val result = bluetoothService.sendCode(targetCommand)
-            if (result.isSuccess) {
-                runCatching {
-                    val ts = SimpleDateFormat("MMM d, yyyy • hh:mm:ss a", Locale.getDefault()).format(Date())
-                    val db = AppDatabase.getInstance(applicationContext)
-                    db.commandLogDao().insert(CommandLog(timestamp = ts, action = targetAction))
-                }
-            }
-            updateTileState()
+        val isOpen = (motion == CurtainMotionState.IDLE_OPEN) || bluetoothService.deviceStatus.value.curtainOpen
+        bluetoothService.triggerCurtain(applicationContext, !isOpen)
+        updateTileState()
+    }
+
+    private fun getCurtainTileFrame(progress: Float, isOpening: Boolean): Int {
+        val p = if (isOpening) progress.coerceIn(0f, 1f) else (1f - progress.coerceIn(0f, 1f))
+        return when {
+            p < 0.18f -> R.drawable.ic_tile_curtain_closed
+            p < 0.42f -> R.drawable.ic_tile_curtain_transit_1
+            p < 0.65f -> R.drawable.ic_tile_curtain_transit_2
+            p < 0.88f -> R.drawable.ic_tile_curtain_transit_3
+            else -> R.drawable.ic_tile_curtain_open
         }
     }
 
@@ -98,20 +108,51 @@ class NexusCurtainTileService : TileService() {
         val tile = qsTile ?: return
         val bluetoothService = BluetoothService.getInstance(applicationContext)
         val isConnected = bluetoothService.connectionState.value is ConnectionState.Connected
+        val motion = bluetoothService.curtainMotionState.value
+        val progress = bluetoothService.curtainProgress.value
 
         tile.label = getString(R.string.tile_curtain_label)
-        tile.icon = Icon.createWithResource(this, R.drawable.ic_tile_curtain)
 
         if (!isConnected) {
             tile.state = Tile.STATE_UNAVAILABLE
+            tile.icon = Icon.createWithResource(this, R.drawable.ic_tile_curtain_closed)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 tile.subtitle = getString(R.string.tile_state_disconnected)
             }
         } else {
-            val isOpen = bluetoothService.deviceStatus.value.curtainOpen
-            tile.state = if (isOpen) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                tile.subtitle = if (isOpen) getString(R.string.tile_curtain_open) else getString(R.string.tile_curtain_closed)
+            when (motion) {
+                CurtainMotionState.OPENING -> {
+                    tile.state = Tile.STATE_ACTIVE
+                    val dotCount = ((progress * 40).toInt() % 3) + 1
+                    val dots = ".".repeat(dotCount)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        tile.subtitle = getString(R.string.tile_curtain_opening) + dots
+                    }
+                    tile.icon = Icon.createWithResource(this, getCurtainTileFrame(progress, isOpening = true))
+                }
+                CurtainMotionState.CLOSING -> {
+                    tile.state = Tile.STATE_ACTIVE
+                    val dotCount = ((progress * 40).toInt() % 3) + 1
+                    val dots = ".".repeat(dotCount)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        tile.subtitle = getString(R.string.tile_curtain_closing) + dots
+                    }
+                    tile.icon = Icon.createWithResource(this, getCurtainTileFrame(progress, isOpening = false))
+                }
+                CurtainMotionState.IDLE_OPEN -> {
+                    tile.state = Tile.STATE_ACTIVE
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        tile.subtitle = getString(R.string.tile_curtain_open)
+                    }
+                    tile.icon = Icon.createWithResource(this, R.drawable.ic_tile_curtain_open)
+                }
+                CurtainMotionState.IDLE_CLOSED -> {
+                    tile.state = Tile.STATE_INACTIVE
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        tile.subtitle = getString(R.string.tile_curtain_closed)
+                    }
+                    tile.icon = Icon.createWithResource(this, R.drawable.ic_tile_curtain_closed)
+                }
             }
         }
         tile.updateTile()
