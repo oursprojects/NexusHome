@@ -295,7 +295,7 @@
         <div class="section-head" style="text-align: left;">
           <span class="section-tag">Actuation & Memory</span>
           <h2 class="section-title">Zero-Sensor Motorized Curtain & Blackout Recovery Engine</h2>
-          <p class="section-desc">The JGY-370 12V high-torque worm-gear motor (30 RPM) drives the physical curtain through a calibrated 25-second traverse without mechanical limit switches. The ESP32 tracks millisecond runtime in memory and checkpoints progress to NVS flash every 500 ms, enabling automated recovery if power is interrupted mid-transit.</p>
+          <p class="section-desc">Curtain control is strictly time-based with binary end-to-end operation: <strong>full open and full close only</strong> (no intermediate stops or half-open positions). The JGY-370 12V high-torque worm-gear motor (30 RPM) drives the physical curtain through a calibrated 25-second traverse without mechanical limit switches. The ESP32 tracks millisecond runtime in memory and checkpoints progress to NVS flash every 500 ms, enabling automated recovery if power is interrupted mid-transit.</p>
         </div>
 
         <div class="curtain-recovery-box" style="margin-top: 0;">
@@ -557,7 +557,7 @@
                 <span class="power-subtag">Direct User Actuation &bull; OLED Displays MANUAL</span>
               </div>
             </div>
-            <p class="power-text">Triggered by the spoken voice command <strong>"user mode"</strong> (or app/quick tile toggle). Selecting User Mode puts the system into manual override: the physical OLED dashboard status bar continues to display <strong>MANUAL</strong>, automated temperature triggers are disabled, and automated overrides are cleared. When initiated, the fan is turned OFF for safety, giving the user complete direct control over lights, fan, and curtains.</p>
+            <p class="power-text">Triggered by the spoken voice command <strong>"user mode"</strong> while awake (or app/quick tile toggle). Selecting User Mode puts the system into manual override: the physical OLED dashboard status bar continues to display <strong>MANUAL</strong>, automated temperature triggers are disabled, and automated overrides are cleared. When initiated, the fan is turned OFF for safety, giving the user complete direct control over lights, fan, and time-based curtains (full open and full close only).</p>
             <div class="power-specs-pills">
               <span class="spec-pill">Voice: "user mode"</span>
               <span class="spec-pill">OLED: MANUAL</span>
@@ -579,9 +579,10 @@
                 <span class="power-subtag">Local Edge Speech Engine</span>
               </div>
             </div>
-            <p class="power-text">The AI-Thinker VC-02 module runs completely offline on dedicated neural-audio hardware. It continuously listens for the wake word <strong>"Nexus"</strong>. Commands are transferred over UART at 9600 baud with an integrated <strong>350ms repeat-command debounce guard</strong> to prevent multiple triggers.</p>
+            <p class="power-text">The AI-Thinker VC-02 module runs completely offline on dedicated neural-audio hardware. Wake once with <strong>"Nexus"</strong> to open an active multi-command listening window—users do <strong>not</strong> need to repeat "Nexus" before each individual command. If no command is received within <strong>10 seconds</strong>, or if speech drift/conversation with others is detected, the module automatically plays a goodbye chime and returns to low-power standby mode waiting for the wake word. Commands are transferred over UART at 9600 baud with an integrated <strong>350ms repeat-command debounce guard</strong>.</p>
             <div class="power-specs-pills">
-              <span class="spec-pill">Wake Word "Nexus"</span>
+              <span class="spec-pill">Wake Once "Nexus"</span>
+              <span class="spec-pill">10s Auto-Goodbye Standby</span>
               <span class="spec-pill">350ms Debounce</span>
               <span class="spec-pill">UART 9600 Baud</span>
             </div>
@@ -599,7 +600,7 @@
               </svg>
               <span>VC-02 Offline Voice Command Lexicon (Wake Word: "Nexus")</span>
             </h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Edge acoustic speech model recognized locally by the VC-02 neural DSP with 350ms debounce guard and UART transmission to the ESP32.</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Edge acoustic speech model recognized locally by the VC-02 neural DSP. Wake once with "Nexus" to chain commands freely; automatically enters standby after 10s of inactivity or upon detecting conversation drift.</p>
           </div>
 
           <div class="table-responsive-wrapper">
@@ -635,12 +636,12 @@
                 <tr>
                   <td><strong style="color: #60A5FA;">"open curtain"</strong></td>
                   <td>GPIO18 / GPIO19 Relays (JGY-370)</td>
-                  <td>Drives motor forward for calibrated 25s traverse with live OLED progress bar</td>
+                  <td>Drives motor forward for full open (calibrated 25s stroke, strictly full open without partial stops) with live OLED progress bar</td>
                 </tr>
                 <tr>
                   <td><strong style="color: #60A5FA;">"close curtain"</strong></td>
                   <td>GPIO18 / GPIO19 Relays (JGY-370)</td>
-                  <td>Drives motor reverse for calibrated 25s traverse with live OLED progress bar</td>
+                  <td>Drives motor reverse for full close (calibrated 25s stroke, strictly full close without partial stops) with live OLED progress bar</td>
                 </tr>
                 <tr>
                   <td><strong style="color: #60A5FA;">"automatic mode"</strong></td>
@@ -655,7 +656,7 @@
                 <tr>
                   <td><strong style="color: #60A5FA;">"goodbye"</strong> / <strong style="color: #60A5FA;">"bye"</strong></td>
                   <td>VC-02 Module Standby</td>
-                  <td>Emits acknowledgment chime tone and returns to low-power standby mode</td>
+                  <td>Emits acknowledgment chime tone and returns to standby (also auto-triggers after 10s of inactivity or conversation drift)</td>
                 </tr>
               </tbody>
             </table>

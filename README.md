@@ -33,7 +33,7 @@ NexusHome is a modern Android application designed for intuitive smart home cont
 
 ## 🎙️ Offline Voice Module (VC-02)
 
-The AI-Thinker VC-02 offline voice recognition module is pre-configured via the template on [voice.ai-thinker.com](https://voice.ai-thinker.com/) (Wake word: *"Nexus"*).
+The AI-Thinker VC-02 offline voice recognition module is pre-configured via the template on [voice.ai-thinker.com](https://voice.ai-thinker.com/) (Wake word: *"Nexus"*). Wake once to issue commands freely without repeating the wake word; automatically enters standby after 10 seconds of inactivity or upon speech drift.
 - **Target Flashing Binary**: `output/uni_app_release.bin`
 - **Configuration Spec**: `output/VC-02 Configurations.docx`
 - **Flashing Utility**: [Hummingbird-M Update Tool](https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/VoiceModule/vc/Support/hummingbird-m-update-tool.zip)

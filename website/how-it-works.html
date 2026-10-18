@@ -179,7 +179,7 @@
               </svg>
             </div>
             <h3 class="feature-title">VC-02 Edge Voice AI</h3>
-            <p class="feature-text">An offline speech processor trained on acoustic wave patterns. It listens only for the wake word <strong>"Nexus"</strong> and recognizes spoken commands in less than 200 milliseconds without internet.</p>
+            <p class="feature-text">An offline speech processor. Wake once with <strong>"Nexus"</strong> and speak commands freely without repeating the wake word. Automatically says goodbye and returns to standby after 10s of inactivity or speech drift.</p>
           </div>
         </div>
       </div>
@@ -205,7 +205,7 @@
               </div>
               <div>
                 <h3 style="color: #10B981;">Automatic Mode</h3>
-                <span class="power-subtag">OLED Status: AUTO &bull; Voice: "Nexus, automatic mode"</span>
+                <span class="power-subtag">OLED Status: AUTO &bull; Spoken: "automatic mode"</span>
               </div>
             </div>
             <p class="power-text">
@@ -236,17 +236,17 @@
               </div>
               <div>
                 <h3 style="color: var(--brand-cyan);">User Mode (Manual Override)</h3>
-                <span class="power-subtag">OLED Status: MANUAL &bull; Voice: "Nexus, user mode"</span>
+                <span class="power-subtag">OLED Status: MANUAL &bull; Spoken: "user mode"</span>
               </div>
             </div>
             <p class="power-text">
               In User Mode, automatic temperature triggers are paused, giving you full direct manual authority:
             </p>
             <ul style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 20px; line-height: 1.6;">
-              <li><strong>Spoken Voice Trigger:</strong> Speak <strong>"Nexus, user mode"</strong> to enter this mode effortlessly.</li>
+              <li><strong>Spoken Voice Trigger:</strong> Speak <strong>"user mode"</strong> while Nexus is awake to enter this mode effortlessly.</li>
               <li><strong>OLED Status Display:</strong> The status bar on the OLED display registers this as manual control and prominently shows <strong>MANUAL</strong>.</li>
               <li><strong>Safety Auto-OFF:</strong> When switching into User Mode, the fan turns OFF initially for safety and clears prior automatic overrides.</li>
-              <li><strong>Direct User Command:</strong> You have 100% control over lighting, fan speeds, and curtains via your phone, widget, quick tiles, or voice commands.</li>
+              <li><strong>Direct User Command:</strong> You have 100% control over lighting, fan (ON/OFF), and curtains (strictly time-based full open / full close only) via your phone, widget, quick tiles, or voice commands.</li>
             </ul>
             <div class="power-specs-pills" style="margin-top: 16px;">
               <span class="spec-pill" style="border-color: rgba(56, 189, 248, 0.3); color: var(--brand-cyan);">Spoken: "user mode"</span>
@@ -302,12 +302,12 @@
             <div class="feature-icon-box step-number">3</div>
             <h3 class="feature-title">Offline Natural Voice AI</h3>
             <p class="feature-text">
-              No need to reach for your phone. Speak aloud from your bed or desk: <em>"Nexus, lights on"</em> or <em>"Nexus, open curtain"</em>. The edge neural DSP recognizes your voice in milliseconds with zero latency and zero internet.
+              Wake the module once by saying <strong>"Nexus"</strong>. <strong>You don't need to say "Nexus" before every command!</strong> Once awake, command freely in sequence (e.g. <em>"lights on"</em>, <em>"fan on"</em>, <em>"open curtain"</em>). If no command is received within 10 seconds or conversation with others is detected, Nexus automatically says goodbye and returns to standby.
             </p>
             <div class="power-specs-pills" style="margin-top: 12px;">
-              <span class="spec-pill">Wake Word "Nexus"</span>
-              <span class="spec-pill">100% Offline Speech</span>
-              <span class="spec-pill">Immediate Execution</span>
+              <span class="spec-pill">Wake Once with "Nexus"</span>
+              <span class="spec-pill">Multi-Command Session</span>
+              <span class="spec-pill">10s Auto-Goodbye Standby</span>
             </div>
           </div>
         </div>
@@ -320,16 +320,16 @@
         <div class="voltage-guard-container">
           <div class="voltage-guard-header">
             <span class="section-tag" style="margin-bottom: 6px;">Precision Actuation</span>
-            <h3>25-Second Motorized Curtains with Blackout Memory</h3>
-            <p>How the motorized curtain traverse works and protects against sudden power disruptions:</p>
+            <h3>Strictly Time-Based 25s Curtains (Full Open & Full Close Only)</h3>
+            <p>NexusHome curtain control is purely time-based and operates strictly end-to-end (full open or full close—no partial or half-way positions) with blackout protection:</p>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
             <div style="background: rgba(11, 17, 30, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px;">
-              <div style="font-size: 0.8rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Phase 1 &bull; Smooth Traverse</div>
-              <h4 style="color: var(--text-primary); margin-bottom: 8px;">Calibrated 25s Movement</h4>
+              <div style="font-size: 0.8rem; color: var(--brand-cyan); font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Phase 1 &bull; Time-Based Full Stroke</div>
+              <h4 style="color: var(--text-primary); margin-bottom: 8px;">Calibrated 25s Full Traverse</h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                A heavy-duty 12V 30RPM worm-gear motor drives the curtain track. It takes exactly 25 seconds for a complete open or close cycle. Both the physical OLED screen and the Android app display a smooth, live progress bar as it travels.
+                A heavy-duty 12V 30RPM worm-gear motor drives the curtain track. Control is strictly binary: <strong>Full Open</strong> or <strong>Full Close</strong> (no half-open or intermediate stops). Every cycle runs on a calibrated 25-second timer with smooth live progress on both the OLED screen and the Android app.
               </p>
             </div>
 
@@ -337,15 +337,15 @@
               <div style="font-size: 0.8rem; color: #F59E0B; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Phase 2 &bull; Power Outage Protection</div>
               <h4 style="color: var(--text-primary); margin-bottom: 8px;">Non-Volatile Checkpoints</h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                Every 500 milliseconds during movement, the ESP32 saves the exact elapsed run time into its non-volatile flash memory (NVS). If mains power is abruptly cut mid-motion, the physical position is not lost.
+                Every 500 milliseconds during movement, the ESP32 saves the exact elapsed run time into its non-volatile flash memory (NVS). If mains power is abruptly cut mid-motion, the physical position progress is not lost.
               </p>
             </div>
 
             <div style="background: rgba(11, 17, 30, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px;">
               <div style="font-size: 0.8rem; color: #10B981; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Phase 3 &bull; Reboot Recovery</div>
-              <h4 style="color: var(--text-primary); margin-bottom: 8px;">Automatic Resume</h4>
+              <h4 style="color: var(--text-primary); margin-bottom: 8px;">Automatic Resumption</h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                When power returns or the solar backup kicks in, the ESP32 reads the checkpoint and resumes only the remaining seconds needed to finish opening or closing. It never runs past the calibrated end.
+                When power returns or solar backup kicks in, the ESP32 reads the checkpoint and resumes only the remaining seconds needed to finish the full stroke. It guarantees curtains reach their full limit without overrunning.
               </p>
             </div>
           </div>
@@ -360,8 +360,8 @@
           <div style="margin-bottom: 20px;">
             <span class="section-tag" style="margin-bottom: 6px;">Spoken Cheat Sheet</span>
             <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 8px;">Voice Commands Reference (Wake Word: "Nexus")</h2>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0;">
-              Always say the wake word <strong>"Nexus"</strong> first. After the brief acknowledgement chime, speak any of the following phrases naturally:
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">
+              Say the wake word <strong>"Nexus"</strong> once to activate listening. <strong>You do not need to repeat "Nexus" before every command!</strong> Once awake, speak any command below in sequence. If no command is received within <strong>10 seconds</strong> or if conversational speech with others is detected, Nexus automatically says goodbye and returns to standby. You can also say <strong>"goodbye"</strong> or <strong>"bye"</strong> to sleep immediately.
             </p>
           </div>
 
@@ -398,12 +398,12 @@
                 <tr>
                   <td><strong style="color: #60A5FA; font-size: 1.05rem;">"open curtain"</strong></td>
                   <td>GPIO18/19 Relays (JGY-370 Motor)</td>
-                  <td>Traverses curtains forward for 25s with real-time filling progress bar on OLED</td>
+                  <td>Full Open traverse: drives motor forward for calibrated 25s stroke (strictly full open, no partial stops); real-time progress bar on OLED</td>
                 </tr>
                 <tr>
                   <td><strong style="color: #60A5FA; font-size: 1.05rem;">"close curtain"</strong></td>
                   <td>GPIO18/19 Relays (JGY-370 Motor)</td>
-                  <td>Traverses curtains reverse for 25s with real-time draining progress bar on OLED</td>
+                  <td>Full Close traverse: drives motor reverse for calibrated 25s stroke (strictly full close, no partial stops); real-time progress bar on OLED</td>
                 </tr>
                 <tr>
                   <td><strong style="color: #10B981; font-size: 1.05rem;">"automatic mode"</strong></td>
@@ -418,7 +418,7 @@
                 <tr>
                   <td><strong style="color: #94A3B8; font-size: 1.05rem;">"goodbye"</strong> / <strong>"bye"</strong></td>
                   <td>VC-02 Module Standby</td>
-                  <td>Plays friendly exit chime and returns speech processor to low-power listening mode</td>
+                  <td>Plays friendly exit chime and returns speech processor to low-power standby mode (also triggers automatically after 10 seconds of no command or conversation drift)</td>
                 </tr>
               </tbody>
             </table>
