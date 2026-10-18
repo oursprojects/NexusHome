@@ -51,6 +51,7 @@
 
         <ul class="nav-links" id="navLinks">
           <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="how-it-works.html" class="nav-link">How It Works</a></li>
           <li><a href="#screenshots" class="nav-link">App Interface</a></li>
           <li><a href="#hardware" class="nav-link">Hardware Hub</a></li>
           <li><a href="#architecture" class="nav-link">Architecture</a></li>
@@ -100,7 +101,7 @@
         <div class="hero-content">
           <div class="badge">
             <span class="badge-dot"></span>
-            <span>Version <strong class="release-version-tag">v1.0.5</strong> Released • Android 8.0 to 16</span>
+            <span>Version <strong class="release-version-tag">v1.0.6</strong> Released • Android 8.0 to 16</span>
           </div>
 
           <h1 class="hero-title">
@@ -117,7 +118,7 @@
               <svg class="btn-icon" viewBox="0 0 24 24" width="22" height="22">
                 <path fill="currentColor" d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993s-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9994.4482.9994.9993s-.4483.9997-.9994.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 0 0-.1521-.5676.416.416 0 0 0-.5676.1521l-2.0223 3.503C15.5847 8.4116 13.8447 8.125 12 8.125c-1.8447 0-3.5847.2866-5.1368.8247L4.841 5.4467a.4161.4161 0 0 0-.5677-.1521.4157.4157 0 0 0-.1521.5676l1.9974 3.4592C2.6889 11.1867.343 14.6589 0 18.75h24c-.343-4.0911-2.6889-7.5633-6.1185-9.4286"/>
               </svg>
-              <span>Download APK (<span class="release-size-tag">5.45 MB</span>)</span>
+              <span>Download APK (<span class="release-size-tag">5.48 MB</span>)</span>
             </a>
 
             <a href="#screenshots" class="btn btn-secondary btn-lg" id="btnHeroScreenshots">
@@ -234,7 +235,7 @@
               </svg>
             </div>
             <h3 class="feature-title">Offline Voice Commands</h3>
-            <p class="feature-text">Built-in VC-02 speech module over UART for instant offline voice control: <em>"lights on/off"</em>, <em>"fan on/off"</em>, <em>"open/close curtain"</em>, and <em>"automatic/manual mode"</em>.</p>
+            <p class="feature-text">Built-in VC-02 speech module over UART for instant offline voice control: <em>"lights on/off"</em>, <em>"fan on/off"</em>, <em>"open/close curtain"</em>, <em>"automatic mode"</em>, and <em>"user mode"</em> (displays MANUAL on OLED).</p>
           </div>
 
           <!-- Feature 4 -->
@@ -280,6 +281,50 @@
             </div>
             <h3 class="feature-title">SSD1309 2.42" OLED UI</h3>
             <p class="feature-text">The ESP32 microcontroller features a dedicated 20 FPS high-contrast OLED display with animated startup, live heartbeat, and device status cards.</p>
+          </div>
+
+          <!-- Feature 7: Home Screen Widget -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M7 8h10"></path>
+                <path d="M7 12h4"></path>
+                <circle cx="15.5" cy="14.5" r="2.5"></circle>
+              </svg>
+            </div>
+            <h3 class="feature-title">4x2 Home Screen Widget</h3>
+            <p class="feature-text">Live Android home screen controller with real-time temperature, climate comfort hints, and 4 one-tap toggles for light, fan, curtain, and automation.</p>
+          </div>
+
+          <!-- Feature 8: Quick Settings Tiles -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <path d="M8 21h8"></path>
+                <path d="M12 17v4"></path>
+                <circle cx="7" cy="8" r="1.5"></circle>
+                <circle cx="12" cy="8" r="1.5"></circle>
+                <circle cx="17" cy="8" r="1.5"></circle>
+              </svg>
+            </div>
+            <h3 class="feature-title">Control Center Quick Tiles</h3>
+            <p class="feature-text">Full 4-tile Quick Settings suite (Nexus Light, Fan, Curtain, Mode) accessible straight from Android's status shade with background persistence.</p>
+          </div>
+
+          <!-- Feature 9: Curtain Transit Animation -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 4h18"></path>
+                <path d="M4 4v16c2-1 3-3 4-7 1-4 1-9 1-9"></path>
+                <path d="M20 4v16c-2-1 -3-3 -4-7 -1-4 -1-9 -1-9"></path>
+                <path d="M12 8v8 M8.5 12h7"></path>
+              </svg>
+            </div>
+            <h3 class="feature-title">Synchronized Curtain Animation</h3>
+            <p class="feature-text">Multi-stage parting vector animation with real-time dot indicators and thread-safe mutex serialization shared seamlessly across app, widget, and tiles.</p>
           </div>
         </div>
       </div>
@@ -672,7 +717,7 @@
           </div>
           <div class="spec-item spec-highlight">
             <span class="spec-label">AUTO-SYNCED APK SIZE</span>
-            <h4 class="release-size-tag">5.45 MB</h4>
+            <h4 class="release-size-tag">5.48 MB</h4>
             <p>Direct from latest GitHub Release asset</p>
           </div>
           <div class="spec-item">
@@ -702,7 +747,7 @@
           <div class="feature-card">
             <div class="feature-icon-box step-number">1</div>
             <h3 class="feature-title">Download APK</h3>
-            <p class="feature-text">Click the download button to save <strong class="release-version-tag">v1.0.5</strong> (`app-release.apk`) directly to your Android device.</p>
+            <p class="feature-text">Click the download button to save <strong class="release-version-tag">v1.0.6</strong> (`app-release.apk`) directly to your Android device.</p>
           </div>
 
           <div class="feature-card">
@@ -731,7 +776,7 @@
               <svg class="btn-icon" viewBox="0 0 24 24" width="22" height="22">
                 <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
               </svg>
-              <span>Download APK (<span class="release-version-tag">v1.0.5</span> • <span class="release-size-tag">5.47 MB</span>)</span>
+              <span>Download APK (<span class="release-version-tag">v1.0.6</span> • <span class="release-size-tag">5.48 MB</span>)</span>
             </a>
             <a href="https://github.com/oursprojects/NexusHome/releases" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-lg" id="btnCtaAllReleases">
               <span>View All Releases on GitHub</span>
@@ -829,6 +874,7 @@
 
       <div class="footer-links">
         <a href="#hero">Back to Top</a>
+        <a href="how-it-works.html">How It Works</a>
         <a href="specs.html#protocol">Commands & Specs</a>
         <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer">Source Code</a>
         <a href="https://github.com/oursprojects/NexusHome/releases" target="_blank" rel="noopener noreferrer">Releases</a>
