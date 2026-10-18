@@ -29,7 +29,7 @@ NexusHome is a modern Android application designed for intuitive smart home cont
 - **Members**:
   - Karylle Jamie Ladera Marimon (Project Member • Researcher)
   - Jestoni Flores (Project Member • Researcher)
-  - Deejay Angelo de La Cruz (Project Member • Circuit & Wiring Designer)
+  - Deejay Angelo de La Cruz (Project Member • Circuit & Wiring Designer • Prototype Designer)
 
 ## 🎙️ Offline Voice Module (VC-02)
 
