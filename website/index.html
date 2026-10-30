@@ -57,6 +57,7 @@
           <li><a href="#architecture" class="nav-link">Architecture</a></li>
           <li><a href="specs.html#protocol" class="nav-link">Commands & Specs ↗</a></li>
           <li><a href="#install" class="nav-link">Install</a></li>
+          <li><a href="#faq" class="nav-link">FAQs</a></li>
           <li><a href="#team" class="nav-link">Team</a></li>
           <li class="nav-mobile-item">
             <a href="https://github.com/oursprojects/NexusHome/releases/latest/download/app-release.apk" class="btn btn-primary btn-sm dynamic-apk-link nav-mobile-btn">
@@ -765,6 +766,303 @@
       </div>
     </section>
 
+    <!-- Frequently Asked Questions (FAQ) Section -->
+    <section class="section" id="faq">
+      <div class="container faq-container">
+        <div class="section-head">
+          <span class="section-tag">Help & Clarity</span>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-desc">Got questions about NexusHome? Find everything you need to know about our 100% offline architecture, voice commands, motorized curtains, climate automation, and hardware setup.</p>
+        </div>
+
+        <!-- FAQ Controls: Instant Search & Category Filters -->
+        <div class="faq-controls">
+          <div class="faq-search-wrapper">
+            <svg class="faq-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="faqSearchInput" class="faq-search-input" placeholder="Search questions (e.g. bluetooth, curtains, voice timeout, offline, backup battery...)" aria-label="Search frequently asked questions">
+            <button type="button" id="faqSearchClear" class="faq-search-clear" aria-label="Clear search input">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <div class="faq-filter-bar" role="tablist" aria-label="Filter FAQ by topic">
+            <button type="button" class="faq-pill active" data-filter="all">All Questions (10)</button>
+            <button type="button" class="faq-pill" data-filter="offline">Privacy & Offline</button>
+            <button type="button" class="faq-pill" data-filter="voice">Voice AI</button>
+            <button type="button" class="faq-pill" data-filter="curtains">Smart Curtains</button>
+            <button type="button" class="faq-pill" data-filter="climate">Climate & Modes</button>
+            <button type="button" class="faq-pill" data-filter="app">App & Quick Tiles</button>
+            <button type="button" class="faq-pill" data-filter="hardware">Hardware & Hub</button>
+          </div>
+        </div>
+
+        <!-- FAQ Accordion List -->
+        <div class="faq-list" id="faqList">
+
+          <!-- FAQ 1: Offline / No Internet -->
+          <div class="faq-item" id="faq-offline" data-category="offline">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Privacy & Offline</span>
+                <span class="faq-question-text">Does NexusHome require an active internet connection, Wi-Fi, or cloud subscription?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>No, absolutely not.</strong> NexusHome is engineered as an entirely self-contained, 100% offline ecosystem.</p>
+                <ul>
+                  <li><strong>Local Bluetooth SPP:</strong> Direct RFCOMM serial connectivity pairs your Android smartphone directly with the ESP32. No home Wi-Fi network, cloud brokers, or external routers are needed.</li>
+                  <li><strong>Edge Neural Speech Processor:</strong> The AI-Thinker VC-02 module runs voice recognition locally on its dedicated neural audio DSP. Spoken commands are parsed on hardware in under 200 ms with zero internet.</li>
+                  <li><strong>Zero Tracking & Zero Fees:</strong> Your telemetry and home activity stay confined inside your room. There are no monthly subscriptions, account sign-ups, or remote telemetry servers.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 2: Voice AI Flow & Timeout -->
+          <div class="faq-item" id="faq-voice-nexus" data-category="voice">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Voice AI</span>
+                <span class="faq-question-text">How does the VC-02 voice module work? Do I need to say "Nexus" before every single command?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>No, you do not need to repeat "Nexus" before every command.</strong></p>
+                <p>Saying the wake word <code>"Nexus"</code> once initiates an active listening session confirmed by a pleasant audio chime. From there:</p>
+                <ul>
+                  <li><strong>Chain Commands Freely:</strong> While active, you can issue commands back-to-back without saying the wake word again (e.g. speak <em>"lights on"</em>, then <em>"fan on"</em>, then <em>"open curtain"</em>).</li>
+                  <li><strong>10-Second Inactivity Auto-Standby:</strong> If no command is received within <strong>10 seconds</strong>, or if the acoustic model detects you are conversing with someone else, Nexus automatically announces <em>"goodbye"</em> and returns to low-power standby mode waiting for the wake word again.</li>
+                  <li><strong>Manual Sleep:</strong> You can also speak <code>"goodbye"</code> or <code>"bye"</code> anytime to return to standby immediately.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3: Curtains Binary Control -->
+          <div class="faq-item" id="faq-curtain-binary" data-category="curtains">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Smart Curtains</span>
+                <span class="faq-question-text">Can I stop the motorized curtains halfway or set a custom opening percentage?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>No. Curtain operation is strictly full open and full close only.</strong></p>
+                <p>NexusHome uses a high-torque 12V 30RPM worm-gear motor (JGY-370) operating on a <strong>calibrated 25-second time-based stroke</strong> without mechanical limit switches. Control is binary: either <strong>Full Open</strong> or <strong>Full Close</strong>. Intermediate stopping or partial percentage positions are intentionally not supported to ensure reliable, zero-sensor end-to-end traversal every single time. Both the physical OLED dashboard and the mobile app render live filling/draining progress bars across the 25-second transit.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4: Curtain Blackout Recovery -->
+          <div class="faq-item" id="faq-curtain-blackout" data-category="curtains">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Smart Curtains</span>
+                <span class="faq-question-text">What happens to the motorized curtains if power is cut while they are opening or closing?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>Curtain transit progress is never lost, thanks to non-volatile flash checkpoints.</strong></p>
+                <p>Every <strong>500 milliseconds</strong> during motorized travel, the ESP32 writes the current movement state and accumulated elapsed milliseconds into Preferences Non-Volatile Storage (NVS). If mains power is abruptly cut mid-motion (for instance, at second 11 of a 25-second closing cycle):</p>
+                <ol>
+                  <li>The motor stops instantly when power drops.</li>
+                  <li>When power returns (or the Motolite 12V UPS battery takes over), the ESP32 boots up, reads the checkpoint from NVS, and recognizes an unfinished transit.</li>
+                  <li>It calculates the remaining time (e.g. 14 seconds) and automatically finishes the stroke until 100% completed, preventing mechanical overruns.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 5: Automatic vs User Mode -->
+          <div class="faq-item" id="faq-modes" data-category="climate">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Climate & Modes</span>
+                <span class="faq-question-text">How does Automatic Mode work compared to User Mode (Manual Override)?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p>NexusHome features two dedicated operating modes tailored for either automated climate regulation or direct user command:</p>
+                <ul>
+                  <li><strong>Automatic Mode (OLED displays AUTO):</strong> The DHT22 digital sensor samples ambient room temperature every 2.5 seconds. When temperature reaches <strong>&ge; 30.0°C</strong>, the cooling fan turns ON automatically accompanied by a 1.5s buzzer chime. When the room cools down to <strong>&le; 29.0°C</strong>, the fan turns OFF. The 1.0°C hysteresis window prevents rapid relay clicking.</li>
+                  <li><strong>User Mode / Manual Override (OLED displays MANUAL):</strong> Triggered by saying <em>"user mode"</em>, toggling in the app, or tapping the quick tile. Automatic temperature triggers are disabled, and the fan turns OFF initially for safety. You have 100% direct control over the light, fan (ON/OFF), and motorized curtains.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 6: Widget & Quick Settings Tiles -->
+          <div class="faq-item" id="faq-widgets-tiles" data-category="app">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">App & Quick Tiles</span>
+                <span class="faq-question-text">Can I control NexusHome from my phone without launching the main application?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>Yes! NexusHome includes two zero-launch Android control interfaces:</strong></p>
+                <ul>
+                  <li><strong>4x2 Home Screen Widget:</strong> Pin the interactive widget to your Android launcher. It displays real-time ambient temperature, comfort status badges, and 4 one-tap toggle buttons for Lighting, Fan, Curtains, and Automation Mode.</li>
+                  <li><strong>Control Center Quick Settings Tiles:</strong> Swipe down your phone's notification shade from anywhere — even while inside full-screen games or streaming videos. Tap dedicated tiles for <strong>Nexus Light</strong>, <strong>Nexus Fan</strong>, <strong>Nexus Curtain</strong>, or <strong>Nexus Mode</strong> to send background Bluetooth commands instantly.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 7: Android Compatibility & Permissions -->
+          <div class="faq-item" id="faq-android-reqs" data-category="app">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">App & Quick Tiles</span>
+                <span class="faq-question-text">Which Android versions are supported, and what permissions does the app require?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p>The official NexusHome Android APK supports <strong>Android 8.0 (Oreo, API 26) up to Android 16 (Baklava, API 36)</strong>.</p>
+                <p>To respect your privacy, only permissions strictly necessary for Bluetooth hardware control are requested:</p>
+                <ul>
+                  <li><code>BLUETOOTH_CONNECT</code> &amp; <code>BLUETOOTH_SCAN</code>: Required on Android 12+ to discover and maintain RFCOMM serial connections with the ESP32.</li>
+                  <li><code>ACCESS_FINE_LOCATION</code>: Required by older Android operating systems (Android 8 to 11) exclusively to scan for nearby Bluetooth peripherals. NexusHome never tracks or records your GPS location.</li>
+                  <li><em>Zero Internet, Camera, or Storage Permissions:</em> The app does not request or possess internet access.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 8: Hardware Specs & Power -->
+          <div class="faq-item" id="faq-hardware-specs" data-category="hardware">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Hardware & Hub</span>
+                <span class="faq-question-text">What components, sensors, and power supplies are inside the NexusHome hardware hub?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p>The custom wall-mounted chassis houses a complete industrial-grade control hub:</p>
+                <ul>
+                  <li><strong>Core Microcontroller:</strong> ESP32 DevKit V1 (30-pin) with 240MHz dual-core Xtensa LX6 CPU and onboard Bluetooth Classic.</li>
+                  <li><strong>Isolated Relays:</strong> 4-channel active-LOW relay board driving 12V 7W LED light (GPIO2), 12V 15W fan (GPIO15), and bidirectional JGY-370 worm-gear motor (GPIO18/19).</li>
+                  <li><strong>Sensors & Display:</strong> DHT22/AM2302 precision temperature sensor (GPIO33) and an SSD1309 2.42" 128x64 high-contrast I²C OLED screen (GPIO21/22) rendering a 20 FPS live dashboard.</li>
+                  <li><strong>Voice Module:</strong> AI-Thinker VC-02 neural audio processor on hardware UART (GPIO16/17 @ 9600 baud).</li>
+                  <li><strong>Power & Backup:</strong> Motolite 12V 7Ah UPS sealed lead-acid battery, LM2596 buck converters (stepping 12V down to stable 5V and 3.3V rails), and dual brushless side cooling fans for thermal exhaust.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 9: Command Logging & Privacy -->
+          <div class="faq-item" id="faq-room-db" data-category="offline">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Privacy & Offline</span>
+                <span class="faq-question-text">Where is my command history stored? Can it be inspected or deleted?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p><strong>Every actuation is stored strictly on your local phone via an embedded Android Room SQLite database.</strong></p>
+                <p>Whenever you tap a toggle or send a voice command, a timestamped audit record is generated locally (e.g. <em>"Fan command - Turned ON"</em> with exact date and time). This data never syncs to any remote server. You can open the <strong>History</strong> screen in the app at any time to review device activity, or permanently erase every saved entry by tapping <strong>"Clear History"</strong>.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 10: First-time pairing guide -->
+          <div class="faq-item" id="faq-pairing-guide" data-category="hardware">
+            <button type="button" class="faq-header" aria-expanded="false">
+              <div class="faq-header-content">
+                <span class="faq-category-badge">Hardware & Hub</span>
+                <span class="faq-question-text">How do I pair and connect my Android smartphone to NexusHome for the first time?</span>
+              </div>
+              <div class="faq-chevron-box">
+                <svg class="faq-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+            <div class="faq-content">
+              <div class="faq-answer">
+                <p>Initial connection takes less than 30 seconds:</p>
+                <ol>
+                  <li><strong>Power ON the Hub:</strong> Ensure the NexusHome enclosure is connected to power. The 2.42" OLED screen will display the startup boot screen and initialize the dashboard.</li>
+                  <li><strong>Pair in Android Settings:</strong> Open your smartphone's <strong>Settings &rarr; Bluetooth</strong>, select <strong>Pair new device</strong>, and choose <strong>"NexusHome"</strong> (pair with PIN <code>1234</code> or confirm prompt).</li>
+                  <li><strong>Open App & Connect:</strong> Launch the NexusHome app, grant Bluetooth permissions if prompted, and tap <strong>Connect</strong>. The dashboard will instantly transition to Connected state and display live room temperature telemetry.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Empty Search State -->
+        <div class="faq-empty-state" id="faqEmptyState">
+          <svg class="faq-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <h3 class="faq-empty-title">No Matching Questions Found</h3>
+          <p class="faq-empty-desc">We couldn't find any questions matching your search. Try different keywords or browse all categories.</p>
+          <button type="button" class="btn btn-secondary btn-sm" id="faqResetBtn">Reset Search & Filters</button>
+        </div>
+
+      </div>
+    </section>
+
     <!-- Call to Action Banner -->
     <section class="section">
       <div class="container">
@@ -879,6 +1177,7 @@
       <div class="footer-links">
         <a href="#hero">Back to Top</a>
         <a href="how-it-works.html">How It Works</a>
+        <a href="#faq">FAQs</a>
         <a href="specs.html#protocol">Commands & Specs</a>
         <a href="https://github.com/oursprojects/NexusHome" target="_blank" rel="noopener noreferrer">Source Code</a>
         <a href="https://github.com/oursprojects/NexusHome/releases" target="_blank" rel="noopener noreferrer">Releases</a>

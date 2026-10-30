@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initFirmwareCodeViewer();
   initScreenshotsCarousel();
+  initFaq();
 });
 
 
@@ -295,9 +296,9 @@ function initGitHubRelease() {
   const sizeTags = document.querySelectorAll('.release-size-tag');
 
   // Fallback defaults
-  const fallbackVersion = 'v1.0.5';
+  const fallbackVersion = 'v1.0.6';
   const fallbackUrl = `https://github.com/${repo}/releases/latest/download/app-release.apk`;
-  const fallbackSize = '5.47 MB';
+  const fallbackSize = '5.48 MB';
 
   // Apply cached release metadata if available (zero flash, instant display)
   try {
@@ -715,5 +716,137 @@ function initScreenshotsCarousel() {
 
   updateActiveState();
 }
+
+/* ===================================================================
+   FAQ Interactive Accordion & Filter Logic
+   =================================================================== */
+function initFaq() {
+  const faqItems = document.querySelectorAll('.faq-item');
+  const searchInput = document.getElementById('faqSearchInput');
+  const clearBtn = document.getElementById('faqSearchClear');
+  const filterPills = document.querySelectorAll('.faq-pill');
+  const emptyState = document.getElementById('faqEmptyState');
+  const resetBtn = document.getElementById('faqResetBtn');
+
+  if (!faqItems.length) return;
+
+  // 1. Accordion Toggle
+  faqItems.forEach(item => {
+    const header = item.querySelector('.faq-header');
+    if (!header) return;
+
+    header.addEventListener('click', () => {
+      const isOpen = item.classList.contains('active');
+
+      // Close other open items for a neat accordion feel
+      faqItems.forEach(other => {
+        if (other !== item && other.classList.contains('active')) {
+          other.classList.remove('active');
+          const otherHeader = other.querySelector('.faq-header');
+          if (otherHeader) otherHeader.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      if (isOpen) {
+        item.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        item.classList.add('active');
+        header.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        header.click();
+      }
+    });
+  });
+
+  // 2. Filter & Live Search
+  let activeCategory = 'all';
+
+  function applyFilters() {
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    let visibleCount = 0;
+
+    faqItems.forEach(item => {
+      const category = item.dataset.category || 'all';
+      const question = (item.querySelector('.faq-question-text')?.textContent || '').toLowerCase();
+      const answer = (item.querySelector('.faq-answer')?.textContent || '').toLowerCase();
+
+      const matchesCategory = activeCategory === 'all' || category === activeCategory;
+      const matchesQuery = !query || question.includes(query) || answer.includes(query);
+
+      if (matchesCategory && matchesQuery) {
+        item.style.display = '';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+        item.classList.remove('active');
+        const header = item.querySelector('.faq-header');
+        if (header) header.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    if (emptyState) {
+      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    if (clearBtn) {
+      clearBtn.style.display = query ? 'flex' : 'none';
+    }
+  }
+
+  // Filter Pills click
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeCategory = pill.dataset.filter || 'all';
+      applyFilters();
+    });
+  });
+
+  // Search input listeners
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchInput.focus();
+      applyFilters();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      activeCategory = 'all';
+      filterPills.forEach(p => {
+        if (p.dataset.filter === 'all') p.classList.add('active');
+        else p.classList.remove('active');
+      });
+      applyFilters();
+    });
+  }
+
+  // Check URL hash for direct deep-linking (e.g. #faq-voice, #faq)
+  if (window.location.hash) {
+    const targetItem = document.querySelector(window.location.hash);
+    if (targetItem && targetItem.classList.contains('faq-item')) {
+      targetItem.classList.add('active');
+      const header = targetItem.querySelector('.faq-header');
+      if (header) header.setAttribute('aria-expanded', 'true');
+      setTimeout(() => {
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }
+}
+
 
 
